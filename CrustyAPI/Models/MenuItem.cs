@@ -1,15 +1,18 @@
-﻿namespace CrustyAPI.Models
+﻿namespace CrustyAPI.Models;
+
+public class MenuItem
 {
-    public class MenuItem
-    {
-        public int Id { get; set; }
+    public int MenuItemID { get; set; }
 
-        public string Name { get; set; } = string.Empty;
+    public string ItemName { get; set; } = string.Empty;
 
-        public string Description { get; set; } = string.Empty;
+    public string? Description { get; set; }
 
-        public decimal Price { get; set; }
+    public decimal Price { get; set; }
 
-        public string Category { get; set; } = string.Empty;
-    }
+    public string Category { get; set; } = string.Empty;
+
+    public bool Availability { get; set; }
+
+    public string? ImageUrl { get; set; }
 }

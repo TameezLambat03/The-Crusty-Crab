@@ -1,23 +1,82 @@
-﻿using CrustyAPI.Services;
+﻿using CrustyAPI.Models;
+using CrustyAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CrustyAPI.Controllers
+namespace CrustyAPI.Controllers;
+
+[ApiController]
+[Route("api/[controller]")]
+public class MenuController : ControllerBase
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class MenuController : ControllerBase
+    private readonly MenuService _menuService;
+
+    public MenuController(MenuService menuService)
     {
-        private readonly MenuService _menuService;
+        _menuService = menuService;
+    }
 
-        public MenuController(MenuService menuService)
+    // GET: api/menu
+    [HttpGet]
+    public async Task<IActionResult> GetMenu()
+    {
+        var menu = await _menuService.GetMenu();
+
+        return Ok(menu);
+    }
+
+    // POST: api/menu
+    [HttpPost]
+    public async Task<IActionResult> CreateMenuItem(MenuItem menuItem)
+    {
+        var createdItem = await _menuService.CreateMenuItem(menuItem);
+
+        return CreatedAtAction(
+            nameof(GetMenuItem),
+            new { id = createdItem.MenuItemID },
+            createdItem
+        );
+    }
+
+    // GET: api/menu/{id}
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetMenuItem(int id)
+    {
+        var menuItem = await _menuService.GetMenuItemById(id);
+
+        if (menuItem == null)
         {
-            _menuService = menuService;
+            return NotFound(new { message = "Menu item not found" });
         }
 
-        [HttpGet]
-        public IActionResult GetMenu()
+        return Ok(menuItem);
+    }
+
+    // PUT: api/menu/{id}
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateMenuItem(
+        int id,
+        MenuItem menuItem)
+    {
+        var updatedItem = await _menuService.UpdateMenuItem(id, menuItem);
+
+        if (updatedItem == null)
         {
-            return Ok(_menuService.GetMenu());
+            return NotFound(new { message = "Menu item not found" });
         }
+
+        return Ok(updatedItem);
+    }
+    //DELETE
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteMenuItem(int id)
+    {
+        var deleted = await _menuService.DeleteMenuItem(id);
+
+        if (!deleted)
+        {
+            return NotFound(new { message = "Menu item not found" });
+        }
+
+        return NoContent();
     }
 }

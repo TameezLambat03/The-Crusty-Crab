@@ -1,48 +1,74 @@
-﻿using CrustyAPI.Models;
+﻿using CrustyAPI.Data;
+using CrustyAPI.Models;
+using Microsoft.EntityFrameworkCore;
 
-namespace CrustyAPI.Services
+namespace CrustyAPI.Services;
+
+public class MenuService
 {
-    public class MenuService
-    {
-        private readonly List<MenuItem> _menuItems = new()
-        {
-            new MenuItem
-            {
-                Id = 1,
-                Name = "Krabby Patty",
-                Description = "The classic CrustyCrab burger.",
-                Price = 49.99m,
-                Category = "Burgers"
-            },
-            new MenuItem
-            {
-                Id = 2,
-                Name = "Double Krabby Patty",
-                Description = "A double-patty version of the classic.",
-                Price = 69.99m,
-                Category = "Burgers"
-            },
-            new MenuItem
-            {
-                Id = 3,
-                Name = "Kelp Fries",
-                Description = "Crispy seasoned fries.",
-                Price = 24.99m,
-                Category = "Sides"
-            },
-            new MenuItem
-            {
-                Id = 4,
-                Name = "Krabby Shake",
-                Description = "A creamy milkshake.",
-                Price = 29.99m,
-                Category = "Drinks"
-            }
-        };
+    private readonly AppDbContext _context;
 
-        public List<MenuItem> GetMenu()
+    public MenuService(AppDbContext context)
+    {
+        _context = context;
+    }
+
+    public async Task<List<MenuItem>> GetMenu()
+    {
+        return await _context.MenuItems
+            .ToListAsync();
+    }
+
+    public async Task<MenuItem?> GetMenuItemById(int id)
+    {
+        return await _context.MenuItems
+            .FirstOrDefaultAsync(m => m.MenuItemID == id);
+    }
+
+    public async Task<MenuItem> CreateMenuItem(MenuItem menuItem)
+    {
+        _context.MenuItems.Add(menuItem);
+
+        await _context.SaveChangesAsync();
+
+        return menuItem;
+    }
+
+    public async Task<MenuItem?> UpdateMenuItem(int id, MenuItem menuItem)
+    {
+        var existingItem = await _context.MenuItems
+            .FirstOrDefaultAsync(m => m.MenuItemID == id);
+
+        if (existingItem == null)
         {
-            return _menuItems;
+            return null;
         }
+
+        existingItem.ItemName = menuItem.ItemName;
+        existingItem.Description = menuItem.Description;
+        existingItem.Price = menuItem.Price;
+        existingItem.Category = menuItem.Category;
+        existingItem.Availability = menuItem.Availability;
+        existingItem.ImageUrl = menuItem.ImageUrl;
+
+        await _context.SaveChangesAsync();
+
+        return existingItem;
+    }
+    public async Task<bool> DeleteMenuItem(int id)
+    {
+        var menuItem = await _context.MenuItems
+            .FirstOrDefaultAsync(m => m.MenuItemID == id);
+
+        if (menuItem == null)
+        {
+            return false;
+        }
+
+        _context.MenuItems.Remove(menuItem);
+
+        await _context.SaveChangesAsync();
+
+        return true;
     }
 }

@@ -16,6 +16,7 @@ public class AppDbContext : DbContext
 
     public DbSet<DeliveryAddress> DeliveryAddresses { get; set; }
 
+    public DbSet<MenuItem> MenuItems { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -43,5 +44,11 @@ public class AppDbContext : DbContext
             .WithMany()
             .HasForeignKey(a => a.CustomerID)
             .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<MenuItem>()
+    .ToTable("Menu_Item");
+
+        modelBuilder.Entity<MenuItem>()
+            .HasKey(m => m.MenuItemID);
     }
 }

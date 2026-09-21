@@ -26,7 +26,7 @@ namespace CrustyAPI
             // API services
             builder.Services.AddScoped<AuthService>();
             builder.Services.AddScoped<MenuService>();
-            builder.Services.AddSingleton<CartService>();
+            //builder.Services.AddSingleton<CartService>();
             builder.Services.AddScoped<CustomerService>();
             builder.Services.AddScoped<DeliveryAddressService>();
 
