@@ -26,6 +26,9 @@ public class AppDbContext : DbContext
 
     public DbSet<Staff> Staff { get; set; }
 
+    public DbSet<PaymentMethod> PaymentMethods { get; set; }
+
+    public DbSet<Payment> Payments { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -138,5 +141,29 @@ public class AppDbContext : DbContext
 
         modelBuilder.Entity<Staff>()
             .HasKey(s => s.StaffId);
+
+        modelBuilder.Entity<PaymentMethod>()
+    .ToTable("Payment_method");
+
+        modelBuilder.Entity<PaymentMethod>()
+            .HasKey(pm => pm.PaymentMethodID);
+
+        modelBuilder.Entity<Payment>()
+            .ToTable("Payment");
+
+        modelBuilder.Entity<Payment>()
+            .HasKey(p => p.PaymentID);
+
+        modelBuilder.Entity<Payment>()
+            .HasOne<PaymentMethod>()
+            .WithMany()
+            .HasForeignKey(p => p.PaymentMethodID)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Payment>()
+            .HasOne<Order>()
+            .WithMany()
+            .HasForeignKey(p => p.OrderID)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }
