@@ -1,7 +1,10 @@
+using CrustyAPI.Data;
 using CrustyAPI.Services;
+using Microsoft.EntityFrameworkCore;
+
 namespace CrustyAPI
 {
-    public class Program//
+    public class Program
     {
         public static void Main(string[] args)
         {
@@ -10,10 +13,22 @@ namespace CrustyAPI
             builder.Services.AddAuthorization();
             builder.Services.AddOpenApi();
             builder.Services.AddControllers();
-            //api services
+
+            // Database
+            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+            builder.Services.AddDbContext<AppDbContext>(options =>
+                options.UseMySql(
+                    connectionString,
+                    ServerVersion.AutoDetect(connectionString)
+                ));
+
+            // API services
             builder.Services.AddScoped<AuthService>();
             builder.Services.AddScoped<MenuService>();
             builder.Services.AddSingleton<CartService>();
+            builder.Services.AddScoped<CustomerService>();
+
             var app = builder.Build();
 
             if (app.Environment.IsDevelopment())

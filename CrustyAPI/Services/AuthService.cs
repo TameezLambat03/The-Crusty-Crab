@@ -1,40 +1,52 @@
-﻿using CrustyAPI.DTOs;
-using CrustyAPI.Models;
+﻿using CrustyAPI.Data;
+using CrustyAPI.DTOs;
+using Microsoft.EntityFrameworkCore;
 
-
-//actually handles the login logic
-//We're calling the property PasswordHash, but we're temporarily putting plaintext passwords in it purely to get the endpoint working.
-
-//We will replace this with proper password hashing when we connect the database.
 namespace CrustyAPI.Services;
 
 public class AuthService
 {
-    private readonly List<User> _users = new()
+    private readonly AppDbContext _context;
+
+    public AuthService(AppDbContext context)
     {
-        new User
+        _context = context;
+    }
+
+    public async Task<LoginResponse> CustomerLogin(LoginRequest request)
+    {
+        var customer = await _context.Customers
+            .FirstOrDefaultAsync(c =>
+                c.EmailAddress.ToLower() == request.Identifier.ToLower());
+
+        if (customer == null ||
+            !BCrypt.Net.BCrypt.Verify(request.Password, customer.PasswordHash))
         {
-            Id = 1,
-            Username = "admin",
-            PasswordHash = "admin123",
-            Role = "Admin"
-        },
-        new User
-        {
-            Id = 2,
-            Username = "customer",
-            PasswordHash = "customer123",
-            Role = "Customer"
+            return new LoginResponse
+            {
+                Success = false,
+                Message = "Invalid email or password"
+            };
         }
-    };
 
-    public LoginResponse Login(LoginRequest request)
+        return new LoginResponse
+        {
+            Success = true,
+            UserId = customer.CustomerID,
+            Username = customer.EmailAddress,
+            Role = "Customer",
+            Message = "Login successful"
+        };
+    }
+
+    public async Task<LoginResponse> AdminLogin(LoginRequest request)
     {
-        var user = _users.FirstOrDefault(u =>
-            u.Username.Equals(request.Username, StringComparison.OrdinalIgnoreCase) &&
-            u.PasswordHash == request.Password);
+        var admin = await _context.AdminUsers
+            .FirstOrDefaultAsync(a =>
+                a.Username.ToLower() == request.Identifier.ToLower());
 
-        if (user == null)
+        if (admin == null ||
+            !BCrypt.Net.BCrypt.Verify(request.Password, admin.PasswordHash))
         {
             return new LoginResponse
             {
@@ -46,9 +58,9 @@ public class AuthService
         return new LoginResponse
         {
             Success = true,
-            UserId = user.Id,
-            Username = user.Username,
-            Role = user.Role,
+            UserId = admin.AdminID,
+            Username = admin.Username,
+            Role = "Admin",
             Message = "Login successful"
         };
     }
