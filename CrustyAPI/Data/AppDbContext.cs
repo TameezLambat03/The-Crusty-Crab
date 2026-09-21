@@ -20,7 +20,11 @@ public class AppDbContext : DbContext
     public DbSet<Cart> Carts { get; set; }
 
     public DbSet<CartItem> CartItems { get; set; }
+    public DbSet<Order> Orders { get; set; }
 
+    public DbSet<OrderItem> OrderItems { get; set; }
+
+    public DbSet<Staff> Staff { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -86,5 +90,53 @@ public class AppDbContext : DbContext
             .WithMany()
             .HasForeignKey(ci => ci.MenuItemID)
             .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Order>()
+    .ToTable("Order");
+
+        modelBuilder.Entity<Order>()
+            .HasKey(o => o.OrderID);
+
+        modelBuilder.Entity<Order>()
+            .HasOne<Customer>()
+            .WithMany()
+            .HasForeignKey(o => o.CustomerID)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Order>()
+            .HasOne<DeliveryAddress>()
+            .WithMany()
+            .HasForeignKey(o => o.DeliveryAddressID)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Order>()
+            .HasOne<Staff>()
+            .WithMany()
+            .HasForeignKey(o => o.StaffId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        modelBuilder.Entity<OrderItem>()
+            .ToTable("Order_Item");
+
+        modelBuilder.Entity<OrderItem>()
+            .HasKey(oi => oi.OrderItemID);
+
+        modelBuilder.Entity<OrderItem>()
+            .HasOne<Order>()
+            .WithMany()
+            .HasForeignKey(oi => oi.OrderID)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<OrderItem>()
+            .HasOne<MenuItem>()
+            .WithMany()
+            .HasForeignKey(oi => oi.MenuItemID)
+            .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Staff>()
+    .ToTable("Staff");
+
+        modelBuilder.Entity<Staff>()
+            .HasKey(s => s.StaffId);
     }
 }

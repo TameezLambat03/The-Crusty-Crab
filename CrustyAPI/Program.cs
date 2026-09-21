@@ -29,6 +29,7 @@ namespace CrustyAPI
             builder.Services.AddScoped<CartService>();
             builder.Services.AddScoped<CustomerService>();
             builder.Services.AddScoped<DeliveryAddressService>();
+            builder.Services.AddScoped<OrderService>();
 
             var app = builder.Build();
 
