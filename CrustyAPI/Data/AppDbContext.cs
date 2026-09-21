@@ -17,6 +17,12 @@ public class AppDbContext : DbContext
     public DbSet<DeliveryAddress> DeliveryAddresses { get; set; }
 
     public DbSet<MenuItem> MenuItems { get; set; }
+    public DbSet<Cart> Carts { get; set; }
+
+    public DbSet<CartItem> CartItems { get; set; }
+
+
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -50,5 +56,35 @@ public class AppDbContext : DbContext
 
         modelBuilder.Entity<MenuItem>()
             .HasKey(m => m.MenuItemID);
+
+        modelBuilder.Entity<Cart>()
+    .ToTable("Cart");
+
+        modelBuilder.Entity<Cart>()
+            .HasKey(c => c.CartID);
+
+        modelBuilder.Entity<Cart>()
+            .HasOne<Customer>()
+            .WithMany()
+            .HasForeignKey(c => c.CustomerID)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<CartItem>()
+            .ToTable("Cart_Item");
+
+        modelBuilder.Entity<CartItem>()
+            .HasKey(ci => ci.CartItemID);
+
+        modelBuilder.Entity<CartItem>()
+            .HasOne<Cart>()
+            .WithMany()
+            .HasForeignKey(ci => ci.CartID)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<CartItem>()
+            .HasOne<MenuItem>()
+            .WithMany()
+            .HasForeignKey(ci => ci.MenuItemID)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

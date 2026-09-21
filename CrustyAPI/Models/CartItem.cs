@@ -1,19 +1,14 @@
-﻿namespace CrustyAPI.Models
+﻿namespace CrustyAPI.Models;
+
+public class CartItem
 {
-    public class CartItem
-    {
-        public int Id { get; set; }
+    public int CartItemID { get; set; }
 
-        public int UserId { get; set; }
+    public decimal ItemPrice { get; set; }
 
-        public int MenuItemId { get; set; }
+    public int Quantity { get; set; }
 
-        public string ItemName { get; set; } = string.Empty;
+    public int MenuItemID { get; set; }
 
-        public decimal UnitPrice { get; set; }
-
-        public int Quantity { get; set; }
-
-        public decimal TotalPrice => UnitPrice * Quantity;
-    }
+    public int CartID { get; set; }
 }
