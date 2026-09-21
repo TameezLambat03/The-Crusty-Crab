@@ -11,7 +11,10 @@ public class AppDbContext : DbContext
     }
 
     public DbSet<Customer> Customers { get; set; }
+
     public DbSet<AdminUser> AdminUsers { get; set; }
+
+    public DbSet<DeliveryAddress> DeliveryAddresses { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -28,5 +31,17 @@ public class AppDbContext : DbContext
 
         modelBuilder.Entity<AdminUser>()
             .HasKey(a => a.AdminID);
+
+        modelBuilder.Entity<DeliveryAddress>()
+            .ToTable("Delivery_Address");
+
+        modelBuilder.Entity<DeliveryAddress>()
+            .HasKey(a => a.DeliveryAddressID);
+
+        modelBuilder.Entity<DeliveryAddress>()
+            .HasOne<Customer>()
+            .WithMany()
+            .HasForeignKey(a => a.CustomerID)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }
