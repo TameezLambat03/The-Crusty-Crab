@@ -32,7 +32,7 @@ namespace CrustyAPI
             builder.Services.AddScoped<OrderService>();
             builder.Services.AddScoped<PaymentService>();
             builder.Services.AddScoped<AdminStaffService>();
-
+            builder.Services.AddScoped<CrabbyBotService>();
             var app = builder.Build();
 
             if (app.Environment.IsDevelopment())
