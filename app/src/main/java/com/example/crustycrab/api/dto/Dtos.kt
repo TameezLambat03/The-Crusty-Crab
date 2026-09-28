@@ -202,3 +202,23 @@ data class CrabbyBotResponse(
     val message: String,
     val options: List<CrabbyBotOptionDto> = emptyList()
 )
+
+data class CreateSavedCardRequest(
+    val customerID: Int,
+    val paymentMethodID: Int,
+    val cardholderName: String,
+    val cardNumber: String,
+    val expiryMonth: Int,
+    val expiryYear: Int
+)
+
+data class CustomerPaymentMethodResponse(
+    val customerPaymentMethodID: Int,
+    val customerID: Int,
+    val paymentMethodID: Int,
+    val methodName: String,
+    val cardholderName: String?,
+    val cardLast4: String?,
+    val expiryMonth: Int?,
+    val expiryYear: Int?
+)

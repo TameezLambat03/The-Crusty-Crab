@@ -110,4 +110,20 @@ interface CrustyApiService {
     // ---------- CRABBY BOT ----------
     @POST("api/CrabbyBot")
     suspend fun crabbyBot(@Body req: CrabbyBotRequest): Response<CrabbyBotResponse>
+
+    @GET("api/Payment/customer/{customerId}")
+    suspend fun getCustomerPaymentMethods(
+        @Path("customerId") customerId: Int
+    ): Response<List<CustomerPaymentMethodResponse>>
+
+    @POST("api/Payment/customer")
+    suspend fun saveCustomerPaymentMethod(
+        @Body request: CreateSavedCardRequest
+    ): Response<CustomerPaymentMethodResponse>
+
+    @DELETE("api/Payment/customer/{id}")
+    suspend fun deleteCustomerPaymentMethod(
+        @Path("id") id: Int,
+        @Query("customerId") customerId: Int
+    ): Response<Unit>
 }

@@ -37,7 +37,7 @@
         <activity android:name=".DeliveryAddressActivity" android:exported="false" />
         <activity android:name=".PaymentMethodsActivity" android:exported="false" />
         <activity android:name=".CrabbyBotActivity" android:exported="false" />
-
+        <activity android:name=".AddPaymentMethodActivity" />
     </application>
 
 </manifest>

@@ -114,4 +114,29 @@ object CrustyRepository {
 
     suspend fun crabbyBot(optionId: String): ApiResult<CrabbyBotResponse> =
         safeApiCall { api.crabbyBot(CrabbyBotRequest(optionId)) }
+
+    suspend fun getCustomerPaymentMethods(
+        customerId: Int
+    ): ApiResult<List<CustomerPaymentMethodResponse>> {
+        return safeApiCall {
+            api.getCustomerPaymentMethods(customerId)
+        }
+    }
+
+    suspend fun saveCustomerPaymentMethod(
+        request: CreateSavedCardRequest
+    ): ApiResult<CustomerPaymentMethodResponse> {
+        return safeApiCall {
+            api.saveCustomerPaymentMethod(request)
+        }
+    }
+
+    suspend fun deleteCustomerPaymentMethod(
+        id: Int,
+        customerId: Int
+    ): ApiResult<Unit> {
+        return safeApiCall {
+            api.deleteCustomerPaymentMethod(id, customerId)
+        }
+    }
 }

@@ -17,7 +17,6 @@ import com.example.crustycrab.util.ApiResult
 import kotlinx.coroutines.launch
 
 class TrackerActivity : AppCompatActivity() {
-
     private lateinit var binding: ActivityTrackerBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,13 +29,30 @@ class TrackerActivity : AppCompatActivity() {
             finish()
         }
 
+        binding.navHome.setOnClickListener {
+            startActivity(Intent(this, MainActivity::class.java))
+        }
+
+        binding.navMenu.setOnClickListener {
+            startActivity(Intent(this, MenuActivity::class.java))
+        }
+
+        binding.navCart.setOnClickListener {
+            startActivity(Intent(this, CartActivity::class.java))
+        }
+
+        binding.navTracker.setOnClickListener {
+            // Already on Tracker
+        }
+
+        binding.navAccount.setOnClickListener {
+            startActivity(Intent(this, AccountActivity::class.java))
+        }
+
         loadOrders()
     }
 
-    override fun onResume() {
-        super.onResume()
-        loadOrders()
-    }
+
 
     private fun loadOrders() {
 

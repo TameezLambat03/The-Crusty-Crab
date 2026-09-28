@@ -16,7 +16,8 @@ import com.example.crustycrab.repository.CrustyRepository
 import com.example.crustycrab.session.SessionManager
 import com.example.crustycrab.util.ApiResult
 import kotlinx.coroutines.launch
-
+import com.example.crustycrab.api.dto.DeliveryAddressDto
+import android.app.AlertDialog
 class CartActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityCartBinding
@@ -124,20 +125,76 @@ class CartActivity : AppCompatActivity() {
     }
 
     private fun placeOrder() {
+
         val c = cart ?: return
         val uid = SessionManager.getUserId(this)
+
         if (c.items.isEmpty()) {
             toast(getString(R.string.cart_empty_toast))
             return
         }
 
+        lifecycleScope.launch {
+
+            when (val result = CrustyRepository.getAddresses(uid)) {
+
+                is ApiResult.Success -> {
+
+                    if (result.data.isEmpty()) {
+                        toast("Please add a delivery address first.")
+                        return@launch
+                    }
+
+                    showAddressSelection(result.data)
+                }
+
+                is ApiResult.Error -> {
+                    toast(result.message)
+                }
+            }
+        }
+    }
+    private fun showAddressSelection(
+        addresses: List<DeliveryAddressDto>
+    ) {
+
+        val addressLabels = addresses.map { addr ->
+            "${addr.houseNumber} ${addr.streetName}, ${addr.suburb}"
+        }.toTypedArray()
+
+        var selectedAddressId = addresses[0].deliveryAddressId
+
+        AlertDialog.Builder(this)
+            .setTitle("Select Delivery Address")
+            .setSingleChoiceItems(
+                addressLabels,
+                0
+            ) { dialog, which ->
+                selectedAddressId =
+                    addresses[which].deliveryAddressId
+
+                dialog.dismiss()
+
+                createOrder(selectedAddressId)
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
+    private fun createOrder(deliveryAddressId: Int) {
+
+        val c = cart ?: return
+        val uid = SessionManager.getUserId(this)
+
         binding.btnCheckout.isEnabled = false
-        binding.btnCheckout.text = getString(R.string.cart_placing_order)
+        binding.btnCheckout.text =
+            getString(R.string.cart_placing_order)
 
         lifecycleScope.launch {
+
             val req = CreateOrderRequest(
                 customerId = uid,
-                deliveryAddressId = null,
+                deliveryAddressId = deliveryAddressId,
                 deliveryMethod = "Delivery",
                 items = c.items.map {
                     CreateOrderItemRequest(
@@ -146,25 +203,43 @@ class CartActivity : AppCompatActivity() {
                     )
                 }
             )
+
             when (val r = CrustyRepository.createOrder(req)) {
+
                 is ApiResult.Success -> {
-                    // Clear the cart client-side by removing each item
+
                     for (item in c.items) {
                         CrustyRepository.removeCartItem(item.cartItemId)
                     }
-                    toast(getString(R.string.cart_order_placed, r.data.orderID))
-                    startActivity(Intent(this@CartActivity, TrackerActivity::class.java))
+
+                    toast(
+                        getString(
+                            R.string.cart_order_placed,
+                            r.data.orderID
+                        )
+                    )
+
+                    startActivity(
+                        Intent(
+                            this@CartActivity,
+                            TrackerActivity::class.java
+                        )
+                    )
+
                     finish()
                 }
+
                 is ApiResult.Error -> {
+
                     toast(r.message)
+
                     binding.btnCheckout.isEnabled = true
-                    binding.btnCheckout.text = getString(R.string.cart_place_order)
+                    binding.btnCheckout.text =
+                        getString(R.string.cart_place_order)
                 }
             }
         }
     }
-
     private fun toast(m: String) =
         Toast.makeText(this, m, Toast.LENGTH_SHORT).show()
 }
