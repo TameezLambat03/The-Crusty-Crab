@@ -23,12 +23,12 @@ class HomeActivity : AppCompatActivity() {
         val name = SessionManager.getName(this).ifBlank { "Guest" }
         binding.tvWelcomeName.text = getString(R.string.welcome_message, name)
 
-        // Quick action GÇö Browse Menu
+        // Quick action Browse Menu
         binding.tvBrowseTitle.setOnClickListener {
             startActivity(Intent(this, MenuActivity::class.java))
         }
 
-        // Tap the Active Order card GåÆ Tracker
+        // Tap the Active Order card  Tracker
         binding.cardActiveOrder.setOnClickListener {
             startActivity(Intent(this, TrackerActivity::class.java))
         }
@@ -90,30 +90,30 @@ class HomeActivity : AppCompatActivity() {
     private fun setupBottomNavigation() {
         val nav = binding.bottomNavWrapper
 
-        // 0 GÇö Home (current screen)
+        //  Home (current screen)
         nav.getChildAt(0).setOnClickListener {
             // Already on Home GÇö no-op
         }
 
-        // 1 GÇö Menu
+        // 1 Menu
         nav.getChildAt(1).setOnClickListener {
             startActivity(Intent(this, MenuActivity::class.java))
             overridePendingTransition(0, 0)
         }
 
-        // 2 GÇö Cart
+        // 2  Cart
         nav.getChildAt(2).setOnClickListener {
             startActivity(Intent(this, CartActivity::class.java))
             overridePendingTransition(0, 0)
         }
 
-        // 3 GÇö Tracker
+        // 3  Tracker
         nav.getChildAt(3).setOnClickListener {
             startActivity(Intent(this, TrackerActivity::class.java))
             overridePendingTransition(0, 0)
         }
 
-        // 4 GÇö Account
+        // 4  Account
         nav.getChildAt(4).setOnClickListener {
             startActivity(Intent(this, AccountActivity::class.java))
             overridePendingTransition(0, 0)

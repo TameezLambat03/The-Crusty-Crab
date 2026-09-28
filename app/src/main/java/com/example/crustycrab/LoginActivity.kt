@@ -90,7 +90,7 @@ class LoginActivity : AppCompatActivity() {
 
     private fun setLoading(loading: Boolean) {
         binding.btnLoginSubmit.isEnabled = !loading
-        binding.btnLoginSubmit.text = if (loading) "Logging inGÇª" else "Log In"
+        binding.btnLoginSubmit.text = if (loading) "Logging in...ª" else "Log In"
     }
 
     private fun toast(msg: String) =

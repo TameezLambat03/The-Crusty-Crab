@@ -53,7 +53,7 @@ class CartActivity : AppCompatActivity() {
                     renderCart()
                 }
                 is ApiResult.Error -> {
-                    // No cart exists yet GÇö try to create one
+                    // No cart exists yet, try to create one
                     val created = CrustyRepository.createCart(uid)
                     if (created is ApiResult.Success) {
                         cart = created.data
