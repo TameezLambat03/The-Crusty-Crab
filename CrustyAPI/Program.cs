@@ -1,7 +1,7 @@
 using CrustyAPI.Data;
 using CrustyAPI.Services;
 using Microsoft.EntityFrameworkCore;
-
+using Microsoft.Extensions.FileProviders;
 namespace CrustyAPI
 {
     public class Program
@@ -34,13 +34,19 @@ namespace CrustyAPI
             builder.Services.AddScoped<AdminStaffService>();
             builder.Services.AddScoped<CrabbyBotService>();
             var app = builder.Build();
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+        Path.Combine(app.Environment.ContentRootPath, "Images")),
+                RequestPath = "/Images"
+            });
 
             if (app.Environment.IsDevelopment())
             {
                 app.MapOpenApi();
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
 
             app.UseAuthorization();
 

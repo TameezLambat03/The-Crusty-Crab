@@ -2,6 +2,7 @@
 using CrustyAPI.DTOs;
 using CrustyAPI.Models;
 using Microsoft.EntityFrameworkCore;
+using static CrustyAPI.DTOs.PaymentResponse;
 
 namespace CrustyAPI.Services;
 
@@ -13,6 +14,10 @@ public class PaymentService
     {
         _context = context;
     }
+
+    // =========================================================
+    // PAYMENT METHODS
+    // =========================================================
 
     public async Task<List<PaymentMethodResponse>> GetPaymentMethods()
     {
@@ -70,6 +75,115 @@ public class PaymentService
 
         return true;
     }
+
+    // =========================================================
+    // SAVED CUSTOMER PAYMENT METHODS
+    // =========================================================
+
+    public async Task<List<CustomerPaymentMethodResponse>>
+        GetCustomerPaymentMethods(int customerId)
+    {
+        return await _context.CustomerPaymentMethods
+            .Where(cpm => cpm.CustomerID == customerId)
+            .Select(cpm => new CustomerPaymentMethodResponse
+            {
+                CustomerPaymentMethodID = cpm.CustomerPaymentMethodID,
+                CustomerID = cpm.CustomerID,
+                PaymentMethodID = cpm.PaymentMethodID,
+                MethodName = cpm.PaymentMethod.MethodName,
+                CardholderName = cpm.CardholderName,
+                CardLast4 = cpm.CardLast4,
+                ExpiryMonth = cpm.ExpiryMonth,
+                ExpiryYear = cpm.ExpiryYear
+            })
+            .ToListAsync();
+    }
+
+    public async Task<CustomerPaymentMethodResponse?>
+        SaveCustomerPaymentMethod(CreateSavedCardRequest request)
+    {
+        var customerExists = await _context.Customers
+            .AnyAsync(c => c.CustomerID == request.CustomerID);
+
+        if (!customerExists)
+        {
+            return null;
+        }
+
+        var paymentMethod = await _context.PaymentMethods
+            .FirstOrDefaultAsync(pm =>
+                pm.PaymentMethodID == request.PaymentMethodID);
+
+        if (paymentMethod == null)
+        {
+            return null;
+        }
+
+        // Remove spaces from the card number
+        var cardNumber = request.CardNumber.Replace(" ", "");
+
+        // Only store the final four digits
+        var last4 = cardNumber.Length >= 4
+            ? cardNumber[^4..]
+            : cardNumber;
+
+        var savedMethod = new CustomerPaymentMethod
+        {
+            CustomerID = request.CustomerID,
+            PaymentMethodID = request.PaymentMethodID,
+            CardholderName = request.CardholderName,
+            CardLast4 = last4,
+            ExpiryMonth = request.ExpiryMonth,
+            ExpiryYear = request.ExpiryYear
+        };
+
+        _context.CustomerPaymentMethods.Add(savedMethod);
+        await _context.SaveChangesAsync();
+
+        return new CustomerPaymentMethodResponse
+        {
+            CustomerPaymentMethodID =
+                savedMethod.CustomerPaymentMethodID,
+
+            CustomerID = savedMethod.CustomerID,
+
+            PaymentMethodID = savedMethod.PaymentMethodID,
+
+            MethodName = paymentMethod.MethodName,
+
+            CardholderName = savedMethod.CardholderName,
+
+            CardLast4 = savedMethod.CardLast4,
+
+            ExpiryMonth = savedMethod.ExpiryMonth,
+
+            ExpiryYear = savedMethod.ExpiryYear
+        };
+    }
+
+    public async Task<bool> DeleteCustomerPaymentMethod(
+        int customerPaymentMethodId,
+        int customerId)
+    {
+        var savedMethod = await _context.CustomerPaymentMethods
+            .FirstOrDefaultAsync(cpm =>
+                cpm.CustomerPaymentMethodID == customerPaymentMethodId &&
+                cpm.CustomerID == customerId);
+
+        if (savedMethod == null)
+        {
+            return false;
+        }
+
+        _context.CustomerPaymentMethods.Remove(savedMethod);
+        await _context.SaveChangesAsync();
+
+        return true;
+    }
+
+    // =========================================================
+    // PAYMENTS
+    // =========================================================
 
     public async Task<PaymentResponse?> CreatePayment(
         CreatePaymentRequest request)

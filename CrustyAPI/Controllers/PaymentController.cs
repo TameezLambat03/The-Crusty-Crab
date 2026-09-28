@@ -1,6 +1,7 @@
 ﻿using CrustyAPI.DTOs;
 using CrustyAPI.Services;
 using Microsoft.AspNetCore.Mvc;
+using static CrustyAPI.DTOs.PaymentResponse;
 
 namespace CrustyAPI.Controllers;
 
@@ -14,6 +15,10 @@ public class PaymentController : ControllerBase
     {
         _paymentService = paymentService;
     }
+
+    // =========================================================
+    // PAYMENT METHODS
+    // =========================================================
 
     [HttpGet("methods")]
     public async Task<IActionResult> GetPaymentMethods()
@@ -61,6 +66,63 @@ public class PaymentController : ControllerBase
 
         return NoContent();
     }
+
+    // =========================================================
+    // CUSTOMER SAVED PAYMENT METHODS
+    // =========================================================
+
+    [HttpGet("customer/{customerId}")]
+    public async Task<IActionResult> GetCustomerPaymentMethods(
+        int customerId)
+    {
+        var methods =
+            await _paymentService.GetCustomerPaymentMethods(customerId);
+
+        return Ok(methods);
+    }
+
+    [HttpPost("customer")]
+    public async Task<IActionResult> SaveCustomerPaymentMethod(
+        CreateSavedCardRequest request)
+    {
+        var method =
+            await _paymentService.SaveCustomerPaymentMethod(request);
+
+        if (method == null)
+        {
+            return BadRequest(new
+            {
+                message = "Invalid customer or payment method."
+            });
+        }
+
+        return Ok(method);
+    }
+
+    [HttpDelete("customer/{id}")]
+    public async Task<IActionResult> DeleteCustomerPaymentMethod(
+        int id,
+        [FromQuery] int customerId)
+    {
+        var deleted =
+            await _paymentService.DeleteCustomerPaymentMethod(
+                id,
+                customerId);
+
+        if (!deleted)
+        {
+            return NotFound(new
+            {
+                message = "Saved payment method not found."
+            });
+        }
+
+        return NoContent();
+    }
+
+    // =========================================================
+    // PAYMENTS
+    // =========================================================
 
     [HttpPost]
     public async Task<IActionResult> CreatePayment(
