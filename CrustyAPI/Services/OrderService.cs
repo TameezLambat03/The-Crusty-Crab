@@ -165,6 +165,34 @@ public class OrderService
 
         return await BuildOrderResponse(order);
     }
+    // Cancel an order
+    public async Task<OrderResponse?> CancelOrder(
+        int orderId,
+        int customerId)
+    {
+        var order = await _context.Orders
+            .FirstOrDefaultAsync(o =>
+                o.OrderID == orderId &&
+                o.CustomerID == customerId);
+
+        if (order == null)
+        {
+            return null;
+        }
+
+        // Customers can only cancel pending orders
+        if (order.OrderStatus != "Pending" &&
+    order.OrderStatus != "Preparing")
+        {
+            return null;
+        }
+
+        order.OrderStatus = "Cancelled";
+
+        await _context.SaveChangesAsync();
+
+        return await BuildOrderResponse(order);
+    }
 
     // Build complete order response
     private async Task<OrderResponse> BuildOrderResponse(Order order)

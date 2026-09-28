@@ -69,6 +69,27 @@ public class OrderController : ControllerBase
         );
     }
 
+    // PUT: api/order/1/cancel?customerId=1
+    [HttpPut("{id}/cancel")]
+    public async Task<IActionResult> CancelOrder(
+        int id,
+        [FromQuery] int customerId)
+    {
+        var order = await _orderService.CancelOrder(
+            id,
+            customerId);
+
+        if (order == null)
+        {
+            return BadRequest(new
+            {
+                message = "Order cannot be cancelled."
+            });
+        }
+
+        return Ok(order);
+    }
+
     // PUT: api/order/1/status
     [HttpPut("{id}/status")]
     public async Task<IActionResult> UpdateOrderStatus(
