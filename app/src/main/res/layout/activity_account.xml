@@ -48,6 +48,7 @@
                 app:layout_constraintStart_toStartOf="@+id/tvAccBrandTitle" />
 
             <ImageView
+                android:id="@+id/ivAccBack"
                 android:layout_width="36dp"
                 android:layout_height="36dp"
                 android:background="@drawable/bg_button_primary"
@@ -127,6 +128,7 @@
                     android:paddingVertical="16dp"
                     android:gravity="center"
                     android:layout_marginEnd="8dp">
+
                     <TextView
                         android:id="@+id/tvOrdersCount"
                         android:layout_width="wrap_content"
@@ -135,6 +137,7 @@
                         android:textColor="#FFFFFF"
                         android:textSize="24sp"
                         android:textStyle="bold"/>
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -153,6 +156,7 @@
                     android:paddingVertical="16dp"
                     android:gravity="center"
                     android:layout_marginHorizontal="4dp">
+
                     <TextView
                         android:id="@+id/tvFavoritesCount"
                         android:layout_width="wrap_content"
@@ -161,6 +165,7 @@
                         android:textColor="#FFFFFF"
                         android:textSize="24sp"
                         android:textStyle="bold"/>
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -179,6 +184,7 @@
                     android:paddingVertical="16dp"
                     android:gravity="center"
                     android:layout_marginStart="8dp">
+
                     <TextView
                         android:id="@+id/tvReviewsCount"
                         android:layout_width="wrap_content"
@@ -187,6 +193,7 @@
                         android:textColor="#FFFFFF"
                         android:textSize="24sp"
                         android:textStyle="bold"/>
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -208,6 +215,7 @@
                 app:layout_constraintBottom_toBottomOf="parent">
 
                 <TextView
+                    android:id="@+id/tvMenuOrderHistory"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Order History"
@@ -220,6 +228,7 @@
                     android:paddingVertical="16dp"/>
 
                 <TextView
+                    android:id="@+id/tvMenuFavorites"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Favorites"
@@ -232,6 +241,7 @@
                     android:paddingVertical="16dp"/>
 
                 <TextView
+                    android:id="@+id/tvMenuDeliveryAddress"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Delivery Address"
@@ -244,6 +254,7 @@
                     android:paddingVertical="16dp"/>
 
                 <TextView
+                    android:id="@+id/tvMenuPaymentMethods"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Payment Methods"
@@ -256,6 +267,7 @@
                     android:paddingVertical="16dp"/>
 
                 <TextView
+                    android:id="@+id/tvMenuNotifications"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Notifications"
@@ -268,6 +280,7 @@
                     android:paddingVertical="16dp"/>
 
                 <TextView
+                    android:id="@+id/tvMenuHelpSupport"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Help &amp; Support"
@@ -280,6 +293,7 @@
                     android:paddingVertical="16dp"/>
 
                 <TextView
+                    android:id="@+id/tvMenuLogout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Logout"

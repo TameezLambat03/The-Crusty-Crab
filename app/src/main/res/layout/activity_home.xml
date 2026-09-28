@@ -41,7 +41,7 @@
                 android:id="@+id/tvDashLocation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="MONTGOMERY PARK • RANDBURG"
+                android:text="MONTGOMERY PARK Ã¢â‚¬Â¢ RANDBURG"
                 android:textColor="#3B5EFE"
                 android:textSize="10sp"
                 android:letterSpacing="0.1"
