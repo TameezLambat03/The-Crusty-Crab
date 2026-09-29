@@ -7,6 +7,10 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.crustycrab.databinding.ActivityAccountBinding
 import com.example.crustycrab.session.SessionManager
+import androidx.lifecycle.lifecycleScope
+import com.example.crustycrab.repository.CrustyRepository
+import com.example.crustycrab.util.ApiResult
+import kotlinx.coroutines.launch
 
 class AccountActivity : AppCompatActivity() {
 
@@ -31,9 +35,12 @@ class AccountActivity : AppCompatActivity() {
         binding.tvAvatar.text = initials.ifBlank { "?" }
 
         // Stat placeholders
-        binding.tvOrdersCount.text = "-"
+        // Stats
+        binding.tvOrdersCount.text = "0"
         binding.tvFavoritesCount.text = "-"
         binding.tvReviewsCount.text = "-"
+
+        loadOrderCount()
 
         // ---------- Top bar back ----------
         binding.ivAccBack.setOnClickListener {
@@ -70,6 +77,30 @@ class AccountActivity : AppCompatActivity() {
         }
 
         setupBottomNavigation()
+    }
+    private fun loadOrderCount() {
+
+        val userId = SessionManager.getUserId(this)
+
+        if (userId <= 0) {
+            binding.tvOrdersCount.text = "0"
+            return
+        }
+
+        lifecycleScope.launch {
+
+            when (val result = CrustyRepository.getOrders(userId)) {
+
+                is ApiResult.Success -> {
+                    binding.tvOrdersCount.text =
+                        result.data.size.toString()
+                }
+
+                is ApiResult.Error -> {
+                    binding.tvOrdersCount.text = "0"
+                }
+            }
+        }
     }
 
     private fun handleLogout() {

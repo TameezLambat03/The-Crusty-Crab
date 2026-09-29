@@ -138,5 +138,36 @@ object CrustyRepository {
         return safeApiCall {
             api.deleteCustomerPaymentMethod(id, customerId)
         }
+
+
+    }
+    suspend fun cancelOrder(
+        orderId: Int,
+        customerId: Int
+    ): ApiResult<OrderDto> {
+
+        return try {
+
+            val response =
+                api.cancelOrder(orderId, customerId)
+
+            if (response.isSuccessful && response.body() != null) {
+
+                ApiResult.Success(response.body()!!)
+
+            } else {
+
+                ApiResult.Error(
+                    response.errorBody()?.string()
+                        ?: "Unable to cancel order."
+                )
+            }
+
+        } catch (e: Exception) {
+
+            ApiResult.Error(
+                e.message ?: "Unable to cancel order."
+            )
+        }
     }
 }

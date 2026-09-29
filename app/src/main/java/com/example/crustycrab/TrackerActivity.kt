@@ -102,6 +102,49 @@ class TrackerActivity : AppCompatActivity() {
                                 R.string.price_format,
                                 order.totalAmount.toInt()
                             )
+                        val canCancel =
+                            order.orderStatus.equals("Pending", ignoreCase = true) ||
+                                    order.orderStatus.equals("Preparing", ignoreCase = true)
+
+                        if (canCancel) {
+
+                            row.btnCancelOrder.visibility = View.VISIBLE
+
+                            row.btnCancelOrder.setOnClickListener {
+
+                                lifecycleScope.launch {
+
+                                    row.btnCancelOrder.isEnabled = false
+
+                                    when (
+                                        val cancelResult =
+                                            CrustyRepository.cancelOrder(
+                                                order.orderID,
+                                                userId
+                                            )
+                                    ) {
+
+                                        is ApiResult.Success -> {
+
+                                            toast("Order cancelled.")
+
+                                            loadOrders()
+                                        }
+
+                                        is ApiResult.Error -> {
+
+                                            toast(cancelResult.message)
+
+                                            row.btnCancelOrder.isEnabled = true
+                                        }
+                                    }
+                                }
+                            }
+
+                        } else {
+
+                            row.btnCancelOrder.visibility = View.GONE
+                        }
 
                         row.tvItems.text =
                             order.items.joinToString(", ") {
@@ -147,6 +190,9 @@ class TrackerActivity : AppCompatActivity() {
         }
 
         binding.llOrders.addView(textView)
+    }
+    private fun toast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 }
 

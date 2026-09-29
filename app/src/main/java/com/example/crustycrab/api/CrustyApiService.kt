@@ -4,6 +4,7 @@ import com.example.crustycrab.api.dto.*
 import retrofit2.Response
 import retrofit2.http.*
 
+
 interface CrustyApiService {
 
     // ---------- AUTH ----------
@@ -126,4 +127,10 @@ interface CrustyApiService {
         @Path("id") id: Int,
         @Query("customerId") customerId: Int
     ): Response<Unit>
+
+    @PUT("api/Order/{id}/cancel")
+    suspend fun cancelOrder(
+        @Path("id") orderId: Int,
+        @Query("customerId") customerId: Int
+    ): Response<OrderDto>
 }
