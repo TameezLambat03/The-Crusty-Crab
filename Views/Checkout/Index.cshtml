@@ -1,0 +1,62 @@
+﻿@model CrustyCrab.Models.CheckoutViewModel
+@{
+    ViewData["Title"] = "Checkout Suite";
+}
+<div class="topbar">
+    <div class="topbar-inner wide">
+        <a asp-controller="Menu" asp-action="Customise" asp-route-id="1" class="back-link">&larr; Back</a>
+        <span class="topbar-title">US-03 / US-04 Checkout Suite</span>
+        <span class="top-cta-wrap"><a asp-controller="Menu" asp-action="Review" class="btn-green">Complete &rarr;</a></span>
+    </div>
+</div>
+<div class="narrow stack-top">
+    <div class="card-panel checkout-card">
+        <div class="checkout-head">
+            <div>
+                <span class="eyebrow">Secure Order Processing</span>
+                <h2>Fulfillment &amp; Secure Payment</h2>
+            </div>
+            <span class="ssl">&#128274; 256-Bit SSL Encrypted</span>
+        </div>
+        @if (TempData["Error"] is string checkoutError)
+        {
+            <div class="api-error">@checkoutError</div>
+        }
+        <form asp-action="AuthorizePayment" method="post">
+            <input type="hidden" asp-for="MenuItemId" />
+            <input type="hidden" asp-for="SpiceLevel" />
+            @foreach (var addon in Model.Addons)
+            {
+                <input type="hidden" name="Addons" value="@addon" />
+            }
+            <div class="checkout-body">
+                <div>
+                    <h6 class="section-label">1. Fulfillment Method (US-03)</h6>
+                    <div class="fulfil-row">
+                        <div>
+                            <input type="radio" name="FulfillmentMethod" id="c1" value="Collection" checked>
+                            <label for="c1"><strong>Collection</strong><small>Montgomery Park Store (Free)</small></label>
+                        </div>
+                        <div>
+                            <input type="radio" name="FulfillmentMethod" id="c2" value="Delivery">
+                            <label for="c2"><strong>Delivery</strong><small>Randburg Area (+R 50.00)</small></label>
+                        </div>
+                    </div>
+                </div>
+                <div class="pay-panel">
+                    <div class="pay-head">
+                        <h4>Payment Gateway<br />(US-04)</h4>
+                        <span class="pay-icons"><i></i><i></i></span>
+                    </div>
+                    <div class="field"><label>Cardholder Name</label><input type="text" asp-for="CardholderName" placeholder="John Smith" required /></div>
+                    <div class="field"><label>Card Number or Instant EFT Token</label><input type="text" asp-for="CardNumber" placeholder="4000 1234 5678 9010" required /></div>
+                    <div class="field-row">
+                        <div class="field"><input type="text" asp-for="ExpiryDate" placeholder="MM / YY" required /></div>
+                        <div class="field"><input type="text" asp-for="Cvc" placeholder="CVC" required /></div>
+                    </div>
+                    <button type="submit" class="btn-green btn-block">Authorize Payment &amp; Generate Receipt</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

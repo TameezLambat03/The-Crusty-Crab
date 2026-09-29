@@ -1,0 +1,72 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using CrustyCrab.Models;
+using CrustyCrab.Services;
+
+namespace CrustyCrab.Controllers
+{
+    public class ManagerController : Controller
+    {
+        private readonly CrustyApiClient _api;
+
+        public ManagerController(CrustyApiClient api)
+        {
+            _api = api;
+        }
+
+        public async Task<IActionResult> Portal()
+        {
+            var model = new ManagerPortalViewModel();
+
+            var menu = await _api.GetMenu();
+            var orders = await _api.GetOrders();
+
+            if (menu == null || orders == null)
+            {
+                ViewData["ApiError"] = "Some portal data is unavailable right now.";
+            }
+
+            model.InventoryItems = (menu ?? new List<ApiMenuItem>())
+                .Select(m => new InventoryItem
+                {
+                    Id = m.MenuItemID,
+                    Name = m.ItemName,
+                    Status = m.Availability ? "In Stock" : "Out of Stock"
+                })
+                .ToList();
+
+            if (orders != null)
+            {
+                var today = DateTime.UtcNow.Date;
+                var todays = orders
+                    .Where(o => o.OrderDate.Date == today && !o.OrderStatus.Equals("Cancelled", StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+
+                model.TodaysRevenue = todays.Sum(o => o.TotalAmount);
+
+                var peak = orders
+                    .GroupBy(o => o.OrderDate.Hour)
+                    .OrderByDescending(g => g.Count())
+                    .FirstOrDefault();
+
+                if (peak != null)
+                {
+                    model.PeakOrderTime = $"{peak.Key:00}:00 - {(peak.Key + 2) % 24:00}:00";
+                }
+            }
+
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ToggleStock(int id)
+        {
+            var item = await _api.GetMenuItem(id);
+            if (item != null)
+            {
+                item.Availability = !item.Availability;
+                await _api.UpdateMenuItem(item);
+            }
+            return RedirectToAction(nameof(Portal));
+        }
+    }
+}

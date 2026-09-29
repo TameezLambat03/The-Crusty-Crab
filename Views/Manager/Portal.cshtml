@@ -1,0 +1,50 @@
+﻿@model CrustyCrab.Models.ManagerPortalViewModel
+@{
+    ViewData["Title"] = "Manager Portal";
+}
+<div class="topbar">
+    <div class="topbar-inner wide">
+        <a asp-controller="Kitchen" asp-action="Kds" class="back-link">&larr; Back</a>
+        <span class="topbar-title">UR-03 / US-08 / US-09 Manager Portal</span>
+        <span class="top-cta-wrap"><a asp-controller="Menu" asp-action="Review" class="btn-blue">Feedback Page &rarr;</a></span>
+    </div>
+</div>
+<div class="portal-wrap">
+    <div class="kds-head" style="margin-bottom:0">
+        <div>
+            <span class="eyebrow">Restaurant Administration</span>
+            <h1>Manager Analytics &amp; Inventory Portal</h1>
+        </div>
+        <span class="location-chip mono">Location: Montgomery Park</span>
+    </div>
+    @if (ViewData["ApiError"] is string portalError)
+    {
+        <div class="api-error" style="margin-top:24px">@portalError</div>
+    }
+    <div class="portal-grid">
+        <div class="portal-card">
+            <h3>Stock Toggling (US-08)</h3>
+            @foreach (var item in Model.InventoryItems)
+            {
+                <div class="stock-row">
+                    <div><strong>@item.Name</strong><small>Active on customer menu catalog</small></div>
+                    <form asp-action="ToggleStock" method="post">
+                        <input type="hidden" name="id" value="@item.Id" />
+                        <button type="submit" class="stock-btn @(item.Status == "In Stock" ? "" : "out")">@item.Status<br />(Toggle)</button>
+                    </form>
+                </div>
+            }
+        </div>
+        <div class="portal-card">
+            <h3>Sales Analytics &amp; Peak Hours (US-09)</h3>
+            <div class="stat-row">
+                <div class="stat rev"><small>Today's Revenue</small><strong>R @Model.TodaysRevenue.ToString("N2", System.Globalization.CultureInfo.InvariantCulture)</strong></div>
+                <div class="stat"><small>Peak Order Time</small><strong>@Model.PeakOrderTime</strong></div>
+            </div>
+            <div class="staff-box">
+                <h5>Staff Shift Planning Recommendation</h5>
+                <p>@Model.StaffRecommendation</p>
+            </div>
+        </div>
+    </div>
+</div>
