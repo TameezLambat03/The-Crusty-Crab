@@ -1,25 +1,13 @@
 # Visual Studio
 .vs/
-*.user
-*.suo
-
-# Build output
 bin/
 obj/
 
-# User-specific files
-*.userosscache
-*.sln.docstates
-
-# NuGet
-packages/
-
-# Logs
-*.log
-
-# OS files
-.DS_Store
-Thumbs.db
-
-#
-appsettings.json
+# Publish profiles
+**/Properties/PublishProfiles/
+# cs proj
+*.csproj.user
+# Temporary files
+*.tmp
+# Local configuration
+**/appsettings.json
