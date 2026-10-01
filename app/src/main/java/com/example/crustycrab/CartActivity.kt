@@ -16,6 +16,7 @@ import com.example.crustycrab.repository.CrustyRepository
 import com.example.crustycrab.session.SessionManager
 import com.example.crustycrab.util.ApiResult
 import kotlinx.coroutines.launch
+import com.example.crustycrab.util.OrderRequestBuilder
 import com.example.crustycrab.api.dto.DeliveryAddressDto
 import android.app.AlertDialog
 class CartActivity : AppCompatActivity() {
@@ -192,16 +193,10 @@ class CartActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
 
-            val req = CreateOrderRequest(
+            val req = OrderRequestBuilder.build(
+                cart = c,
                 customerId = uid,
-                deliveryAddressId = deliveryAddressId,
-                deliveryMethod = "Delivery",
-                items = c.items.map {
-                    CreateOrderItemRequest(
-                        menuItemId = it.menuItemId,
-                        quantity = it.quantity
-                    )
-                }
+                deliveryAddressId = deliveryAddressId
             )
 
             when (val r = CrustyRepository.createOrder(req)) {

@@ -16,6 +16,7 @@ import com.example.crustycrab.repository.CrustyRepository
 import com.example.crustycrab.session.SessionManager
 import com.example.crustycrab.util.ApiResult
 import kotlinx.coroutines.launch
+import com.example.crustycrab.api.ApiConfig
 
 class MenuActivity : AppCompatActivity() {
 
@@ -186,7 +187,7 @@ class MenuActivity : AppCompatActivity() {
         return if (path.startsWith("http")) {
             path
         } else {
-            "http://10.0.2.2:5083" +
+            ApiConfig.BASE_URL.trimEnd('/') +
                     if (path.startsWith("/")) {
                         path
                     } else {
