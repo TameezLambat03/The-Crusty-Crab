@@ -1,67 +1,108 @@
 ﻿@model CrustyCrab.Models.MenuItem
 @{
-    ViewData["Title"] = "Customisation Studio";
+    ViewData["Title"] = "Review Your Item";
 }
 
 <div class="narrow stack-top">
-    <div class="card-panel" style="max-width: 510px; margin: 0 auto;">
+    <div class="card-panel" style="max-width:510px;margin:0 auto;">
+
         <div class="studio-top">
             <div>
-                <span class="chip-mono mono">Builder Studio</span>
+                <span class="chip-mono mono">Review Your Item</span>
                 <h2>@Model.Name</h2>
             </div>
+
             <div class="price-block">
-                <div class="price-label">Total Calculated Price</div>
-                <div class="price-value" id="totalPrice">R @Model.Price.ToString("0.00")</div>
+                <div class="price-label">Price</div>
+                <div class="price-value">
+                    R @Model.Price.ToString("0.00")
+                </div>
             </div>
         </div>
+
         <form asp-controller="Checkout" asp-action="Index" method="get">
+
             <input type="hidden" name="menuItemId" value="@Model.Id" />
-            <h6 class="section-label">1. Select Spice &amp; Flavour Level</h6>
+
+            <h6 class="section-label">
+                1. Select Spice &amp; Flavour Level
+            </h6>
+
             <div class="opt-row">
+
                 <div class="t-cyan">
-                    <input type="radio" name="SpiceLevel" id="spiceMild" value="Mild">
-                    <label for="spiceMild"><strong>Mild</strong><small>Gentle garlic butter with zero chilli kick</small></label>
+                    <input type="radio"
+                           name="SpiceLevel"
+                           id="spiceMild"
+                           value="Mild">
+
+                    <label for="spiceMild">
+                        <strong>Mild</strong>
+                        <small>
+                            Gentle garlic butter with zero chilli kick
+                        </small>
+                    </label>
                 </div>
+
                 <div>
-                    <input type="radio" name="SpiceLevel" id="spiceMedium" value="Medium" checked>
-                    <label for="spiceMedium"><strong>Medium (Default)</strong><small>Authentic Louisiana cajun spice blend</small></label>
+                    <input type="radio"
+                           name="SpiceLevel"
+                           id="spiceMedium"
+                           value="Medium"
+                           checked>
+
+                    <label for="spiceMedium">
+                        <strong>Medium (Default)</strong>
+                        <small>
+                            Authentic Louisiana cajun spice blend
+                        </small>
+                    </label>
                 </div>
+
                 <div class="t-amber">
-                    <input type="radio" name="SpiceLevel" id="spiceHot" value="Extra Hot">
-                    <label for="spiceHot"><strong>Extra Hot</strong><small>Fiery habanero infused cajun fire</small></label>
+                    <input type="radio"
+                           name="SpiceLevel"
+                           id="spiceHot"
+                           value="Extra Hot">
+
+                    <label for="spiceHot">
+                        <strong>Extra Hot</strong>
+                        <small>
+                            Fiery habanero infused cajun fire
+                        </small>
+                    </label>
                 </div>
+
             </div>
-            <h6 class="section-label">2. Add-On Extras &amp; Proteins</h6>
-            <label class="addon">
-                <span><strong>Extra Jumbo Prawns (5 pcs)</strong><small>Succulent tiger prawns tossed in sauce</small></span>
-                <span class="addon-right"><span class="addon-price mono">+ R 45.00</span><input class="addon-checkbox" type="checkbox" name="addons" value="Extra Jumbo Prawns (5pcs)" data-price="45.00"></span>
-            </label>
-            <label class="addon">
-                <span><strong>Extra Corn on the Cob (2 pieces)</strong><small>Sweet yellow corn soaked in butter</small></span>
-                <span class="addon-right"><span class="addon-price mono">+ R 25.00</span><input class="addon-checkbox" type="checkbox" name="addons" value="Extra Corn on the Cob (2pcs)" data-price="25.00"></span>
-            </label>
+
             <div class="studio-cta">
-                <button type="submit" class="btn-blue btn-block">Proceed to Secure Checkout (US-03)</button>
+                <button type="submit"
+                        class="btn-blue btn-block">
+                    Proceed to Checkout &rarr;
+                </button>
             </div>
+
         </form>
-        <form asp-controller="Cart" asp-action="AddFromMenu" method="post" style="margin-top:10px;">
-            <input type="hidden" name="menuItemId" value="@Model.Id" />
-            <input type="hidden" name="quantity" value="1" />
-            <button type="submit" class="btn-ghost btn-block">Add Base Item to Cart</button>
+
+        <form asp-controller="Cart"
+              asp-action="AddFromMenu"
+              method="post"
+              style="margin-top:10px;">
+
+            <input type="hidden"
+                   name="menuItemId"
+                   value="@Model.Id" />
+
+            <input type="hidden"
+                   name="quantity"
+                   value="1" />
+
+            <button type="submit"
+                    class="btn-ghost btn-block">
+                Add to Cart
+            </button>
+
         </form>
+
     </div>
 </div>
-@section Scripts {
-    <script>
-        const basePrice = @Model.Price;
-        const totalPriceEl = document.getElementById('totalPrice');
-        document.querySelectorAll('.addon-checkbox').forEach(box => {
-            box.addEventListener('change', () => {
-                let total = basePrice;
-                document.querySelectorAll('.addon-checkbox:checked').forEach(cb => total += parseFloat(cb.dataset.price));
-                totalPriceEl.textContent = 'R ' + total.toFixed(2);
-            });
-        });
-    </script>
-}

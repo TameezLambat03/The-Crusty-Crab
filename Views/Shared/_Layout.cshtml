@@ -24,6 +24,7 @@
         var role = Context.Session.GetString("Role");
 
         var isLoggedIn = userId.HasValue;
+
         var isAdmin = string.Equals(
             role,
             "Admin",
@@ -71,25 +72,28 @@
                     Menu
                 </a>
 
-                <a asp-controller="Cart"
-                   asp-action="Index">
-                    Cart
-                </a>
+                @if (isCustomer)
+                {
+                    <a asp-controller="Cart"
+                       asp-action="Index">
+                        Cart
+                    </a>
 
-                <a asp-controller="Checkout"
-                   asp-action="Index">
-                    Checkout
-                </a>
+                    <a asp-controller="Checkout"
+                       asp-action="Index">
+                        Checkout
+                    </a>
 
-                <a asp-controller="Kitchen"
-                   asp-action="Tracker">
-                    Live Tracker
-                </a>
+                    <a asp-controller="Kitchen"
+                       asp-action="Tracker">
+                        Live Tracker
+                    </a>
 
-                <a asp-controller="Menu"
-                   asp-action="Review">
-                    Feedback
-                </a>
+                    <a asp-controller="Menu"
+                       asp-action="Review">
+                        Feedback
+                    </a>
+                }
 
                 @if (isAdmin)
                 {
@@ -129,6 +133,15 @@
                 }
                 else
                 {
+                    @if (isCustomer)
+                    {
+                        <a asp-controller="Customer"
+                           asp-action="Index"
+                           class="btn-blue">
+                            My Account
+                        </a>
+                    }
+
                     <form asp-controller="Auth"
                           asp-action="Logout"
                           method="post"

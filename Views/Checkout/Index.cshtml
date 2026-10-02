@@ -57,7 +57,7 @@
                 <div>
 
                     <h6 class="section-label">
-                        1. Fulfillment Method (US-03)
+                        1. Fulfillment Method
                     </h6>
 
                     <div class="fulfil-row">
@@ -137,8 +137,7 @@
                     <div class="pay-head">
 
                         <h4>
-                            Payment Gateway<br />
-                            (US-04)
+                            Payment Gateway
                         </h4>
 
                         <span class="pay-icons">
@@ -156,7 +155,8 @@
                                 Payment Method
                             </label>
 
-                            <select asp-for="PaymentMethodId">
+                            <select asp-for="PaymentMethodId"
+                                    id="paymentMethod">
 
                                 @foreach (var method in Model.PaymentMethods)
                                 {
@@ -170,51 +170,63 @@
                         </div>
                     }
 
-                    <div class="field">
-
-                        <label>
-                            Cardholder Name
-                        </label>
-
-                        <input type="text"
-                               asp-for="CardholderName"
-                               placeholder="John Smith"
-                               required />
-
-                    </div>
-
-                    <div class="field">
-
-                        <label>
-                            Card Number or Instant EFT Token
-                        </label>
-
-                        <input type="text"
-                               asp-for="CardNumber"
-                               placeholder="4000 1234 5678 9010"
-                               required />
-
-                    </div>
-
-                    <div class="field-row">
+                    <div id="cardFields">
 
                         <div class="field">
 
+                            <label>
+                                Cardholder Name
+                            </label>
+
                             <input type="text"
-                                   asp-for="ExpiryDate"
-                                   placeholder="MM / YY"
-                                   required />
+                                   asp-for="CardholderName"
+                                   id="cardholderName"
+                                   placeholder="John Smith" />
 
                         </div>
 
                         <div class="field">
 
+                            <label>
+                                Card Number
+                            </label>
+
                             <input type="text"
-                                   asp-for="Cvc"
-                                   placeholder="CVC"
-                                   required />
+                                   asp-for="CardNumber"
+                                   id="cardNumber"
+                                   placeholder="4000 1234 5678 9010" />
 
                         </div>
+
+                        <div class="field-row">
+
+                            <div class="field">
+
+                                <input type="text"
+                                       asp-for="ExpiryDate"
+                                       id="expiryDate"
+                                       placeholder="MM / YY" />
+
+                            </div>
+
+                            <div class="field">
+
+                                <input type="text"
+                                       asp-for="Cvc"
+                                       id="cvc"
+                                       placeholder="CVC" />
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div id="cashMessage"
+                         class="empty-note"
+                         style="display:none;margin-bottom:18px;">
+
+                        Payment will be made in cash when you collect your order.
 
                     </div>
 
@@ -232,3 +244,70 @@
     </div>
 
 </div>
+
+@section Scripts
+{
+    <script>
+        const paymentMethod = document.getElementById("paymentMethod");
+        const cardFields = document.getElementById("cardFields");
+        const cashMessage = document.getElementById("cashMessage");
+
+        const cardholderName = document.getElementById("cardholderName");
+        const cardNumber = document.getElementById("cardNumber");
+        const expiryDate = document.getElementById("expiryDate");
+        const cvc = document.getElementById("cvc");
+
+        function updatePaymentFields() {
+
+            if (!paymentMethod) {
+                return;
+            }
+
+            const selectedText =
+                paymentMethod.options[paymentMethod.selectedIndex]
+                    .text
+                    .toLowerCase();
+
+            const isCash = selectedText.includes("cash");
+            const isCard = selectedText.includes("card");
+
+            if (isCash) {
+
+                cardFields.style.display = "none";
+                cashMessage.style.display = "block";
+
+                cardholderName.required = false;
+                cardNumber.required = false;
+                expiryDate.required = false;
+                cvc.required = false;
+
+            }
+            else if (isCard) {
+
+                cardFields.style.display = "block";
+                cashMessage.style.display = "none";
+
+                cardholderName.required = true;
+                cardNumber.required = true;
+                expiryDate.required = true;
+                cvc.required = true;
+
+            }
+            else {
+
+                cardFields.style.display = "none";
+                cashMessage.style.display = "none";
+
+                cardholderName.required = false;
+                cardNumber.required = false;
+                expiryDate.required = false;
+                cvc.required = false;
+            }
+        }
+
+        if (paymentMethod) {
+            paymentMethod.addEventListener("change", updatePaymentFields);
+            updatePaymentFields();
+        }
+    </script>
+}
