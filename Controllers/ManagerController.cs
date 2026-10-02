@@ -15,6 +15,9 @@ namespace CrustyCrab.Controllers
 
         public async Task<IActionResult> Portal()
         {
+            if (!HttpContext.Session.GetInt32("UserId").HasValue || !string.Equals(HttpContext.Session.GetString("Role"), "Admin", StringComparison.OrdinalIgnoreCase))
+                return RedirectToAction("Login", "Auth", new { returnUrl = Url.Action(nameof(Portal), "Manager") });
+
             var model = new ManagerPortalViewModel();
 
             var menu = await _api.GetMenu();
@@ -25,6 +28,7 @@ namespace CrustyCrab.Controllers
                 ViewData["ApiError"] = "Some portal data is unavailable right now.";
             }
 
+            model.MenuItems = menu ?? new List<ApiMenuItem>();
             model.InventoryItems = (menu ?? new List<ApiMenuItem>())
                 .Select(m => new InventoryItem
                 {
@@ -60,6 +64,9 @@ namespace CrustyCrab.Controllers
         [HttpPost]
         public async Task<IActionResult> ToggleStock(int id)
         {
+            if (!HttpContext.Session.GetInt32("UserId").HasValue || !string.Equals(HttpContext.Session.GetString("Role"), "Admin", StringComparison.OrdinalIgnoreCase))
+                return RedirectToAction("Login", "Auth");
+
             var item = await _api.GetMenuItem(id);
             if (item != null)
             {

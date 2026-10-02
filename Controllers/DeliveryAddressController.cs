@@ -1,4 +1,4 @@
-﻿using CrustyCrab.Models;
+using CrustyCrab.Models;
 using CrustyCrab.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,6 +11,37 @@ namespace CrustyCrab.Controllers
         public DeliveryAddressController(CrustyApiClient api)
         {
             _api = api;
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateForm(DeliveryAddressRequest request)
+        {
+            var customerId = HttpContext.Session.GetInt32("UserId");
+            if (!customerId.HasValue)
+                return RedirectToAction("Login", "Auth");
+
+            var address = await _api.CreateAddress(customerId.Value, request.Suburb, request.HouseNumber, request.StreetName, request.BuildingType);
+            TempData[address == null ? "Error" : "Success"] = address == null
+                ? "The delivery address could not be added."
+                : "Delivery address added.";
+            return RedirectToAction("Index", "Customer");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateForm(DeliveryAddressUpdateRequest request, int id)
+        {
+            var address = await _api.UpdateAddress(id, request.Suburb, request.HouseNumber, request.StreetName, request.BuildingType);
+            TempData[address == null ? "Error" : "Success"] = address == null
+                ? "The delivery address could not be updated."
+                : "Delivery address updated.";
+            return RedirectToAction("Index", "Customer");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteForm(int id)
+        {
+            await _api.DeleteAddress(id);
+            return RedirectToAction("Index", "Customer");
         }
 
         [HttpGet]

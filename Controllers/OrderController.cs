@@ -1,4 +1,4 @@
-﻿using CrustyCrab.Models;
+using CrustyCrab.Models;
 using CrustyCrab.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -39,6 +39,18 @@ namespace CrustyCrab.Controllers
         {
             var order = await _api.CreateOrder(request.CustomerID, request.DeliveryAddressID, request.DeliveryMethod, request.Items);
             return order == null ? BadRequest() : Json(order);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CancelForm(int id, int customerId)
+        {
+            var sessionCustomerId = HttpContext.Session.GetInt32("UserId");
+            if (!sessionCustomerId.HasValue || sessionCustomerId.Value != customerId)
+                return RedirectToAction("Login", "Auth");
+
+            var order = await _api.CancelOrder(id, customerId);
+            TempData[order == null ? "Error" : "Success"] = order == null ? "The order could not be cancelled." : "The order has been cancelled.";
+            return RedirectToAction("Index", "Customer");
         }
 
         [HttpPut]

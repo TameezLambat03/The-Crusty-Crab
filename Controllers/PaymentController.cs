@@ -1,4 +1,4 @@
-﻿using CrustyCrab.Models;
+using CrustyCrab.Models;
 using CrustyCrab.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,6 +11,29 @@ namespace CrustyCrab.Controllers
         public PaymentController(CrustyApiClient api)
         {
             _api = api;
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SaveCustomerMethodForm(SavedPaymentMethodRequest request)
+        {
+            var customerId = HttpContext.Session.GetInt32("UserId");
+            if (!customerId.HasValue)
+                return RedirectToAction("Login", "Auth");
+
+            var method = await _api.SaveCustomerPaymentMethod(customerId.Value, request.PaymentMethodID, request.CardholderName, request.CardNumber, request.ExpiryMonth, request.ExpiryYear);
+            TempData[method == null ? "Error" : "Success"] = method == null
+                ? "The payment method could not be saved."
+                : "Payment method saved.";
+            return RedirectToAction("Index", "Customer");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteCustomerMethodForm(int id)
+        {
+            var customerId = HttpContext.Session.GetInt32("UserId");
+            if (customerId.HasValue)
+                await _api.DeleteCustomerPaymentMethod(id, customerId.Value);
+            return RedirectToAction("Index", "Customer");
         }
 
         [HttpGet]

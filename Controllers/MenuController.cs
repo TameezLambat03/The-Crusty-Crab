@@ -31,16 +31,11 @@ namespace CrustyCrab.Controllers
         {
             var apiItems = await _api.GetMenu();
             if (apiItems == null)
-            {
                 ViewData["ApiError"] = "The menu is unavailable right now. Please try again shortly.";
-            }
 
             var items = (apiItems ?? new List<ApiMenuItem>()).Select(ToMenuItem).ToList();
-
             if (category != "All Items")
-            {
                 items = items.Where(m => m.Category.Equals(category, StringComparison.OrdinalIgnoreCase)).ToList();
-            }
 
             ViewData["CurrentCategory"] = category;
             return View(items);
@@ -60,6 +55,37 @@ namespace CrustyCrab.Controllers
                 return RedirectToAction(nameof(Index));
             }
             return View(ToMenuItem(apiItem));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateForm(ApiMenuItem item)
+        {
+            if (!IsAdmin())
+                return RedirectToAction("Login", "Auth");
+
+            var created = await _api.CreateMenuItem(item);
+            TempData[created == null ? "Error" : "Success"] = created == null ? "The menu item could not be created." : "Menu item created.";
+            return RedirectToAction("Portal", "Manager");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateForm(int id, ApiMenuItem item)
+        {
+            if (!IsAdmin())
+                return RedirectToAction("Login", "Auth");
+
+            item.MenuItemID = id;
+            var updated = await _api.UpdateMenuItem(item);
+            TempData[updated == null ? "Error" : "Success"] = updated == null ? "The menu item could not be updated." : "Menu item updated.";
+            return RedirectToAction("Portal", "Manager");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteForm(int id)
+        {
+            if (IsAdmin())
+                await _api.DeleteMenuItem(id);
+            return RedirectToAction("Portal", "Manager");
         }
 
         [HttpPost]
@@ -86,6 +112,12 @@ namespace CrustyCrab.Controllers
         public IActionResult Review()
         {
             return View();
+        }
+
+        private bool IsAdmin()
+        {
+            return HttpContext.Session.GetInt32("UserId").HasValue &&
+                   string.Equals(HttpContext.Session.GetString("Role"), "Admin", StringComparison.OrdinalIgnoreCase);
         }
     }
 }
