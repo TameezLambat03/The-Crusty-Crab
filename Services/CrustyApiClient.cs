@@ -138,5 +138,16 @@ namespace CrustyCrab.Services
                 return null;
             }
         }
+
+        public string ResolveApiUrl(string? url)
+        {
+            if (string.IsNullOrWhiteSpace(url))
+                return string.Empty;
+
+            if (Uri.TryCreate(url, UriKind.Absolute, out var absolute))
+                return absolute.ToString();
+
+            return new Uri(_http.BaseAddress!, url.TrimStart('/')).ToString();
+        }
     }
 }

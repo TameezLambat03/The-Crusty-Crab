@@ -13,7 +13,7 @@ namespace CrustyCrab.Controllers
             _api = api;
         }
 
-        internal static MenuItem ToMenuItem(ApiMenuItem item)
+        private MenuItem ToMenuItem(ApiMenuItem item)
         {
             return new MenuItem
             {
@@ -23,26 +23,26 @@ namespace CrustyCrab.Controllers
                 Description = item.Description ?? string.Empty,
                 Price = item.Price,
                 IsInStock = item.Availability,
-                ImageUrl = ResolveImage(item.ImageUrl)
+                ImageUrl = _api.ResolveApiUrl(item.ImageUrl)
             };
         }
 
-        private static string ResolveImage(string? url)
-        {
-            if (string.IsNullOrWhiteSpace(url))
-            {
-                return string.Empty;
-            }
-            if (url.StartsWith("http", StringComparison.OrdinalIgnoreCase) || url.StartsWith("~/"))
-            {
-                return url;
-            }
-            if (url.StartsWith("/"))
-            {
-                return "~" + url;
-            }
-            return "~/images/" + url;
-        }
+        //private static string ResolveImage(string? url)
+        //{
+        //    if (string.IsNullOrWhiteSpace(url))
+        //    {
+        //        return string.Empty;
+        //    }
+        //    if (url.StartsWith("http", StringComparison.OrdinalIgnoreCase) || url.StartsWith("~/"))
+        //    {
+        //        return url;
+        //    }
+        //    if (url.StartsWith("/"))
+        //    {
+        //        return "~" + url;
+        //    }
+        //    return "~/images/" + url;
+        //}
 
         public async Task<IActionResult> Index(string category = "All Items")
         {
