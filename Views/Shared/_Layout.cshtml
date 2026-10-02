@@ -160,10 +160,117 @@
         </div>
     </div>
 
+    @if (isCustomer)
+{
+    <button id="crabbyBubble"
+            type="button"
+            class="crabby-bubble">
+        🦀
+    </button>
+
+    <div id="crabbyChat"
+         class="crabby-chat"
+         style="display:none;">
+
+        <div class="crabby-chat-head">
+            <strong>🦀 CrabbyBot</strong>
+
+            <button type="button"
+                    id="crabbyClose"
+                    class="crabby-close">
+                &times;
+            </button>
+        </div>
+
+        <div id="crabbyMessage"
+             class="crabby-message">
+            Loading CrabbyBot...
+        </div>
+
+        <div id="crabbyOptions"
+             class="crabby-options">
+        </div>
+
+        <a asp-controller="CrabbyBot"
+           asp-action="Index"
+           class="crabby-full-link">
+            Open full CrabbyBot
+        </a>
+
+    </div>
+}
     @RenderBody()
 
     <script src="~/js/site.js"
             asp-append-version="true"></script>
+            @if (isCustomer)
+{
+    <script>
+        const crabbyBubble = document.getElementById("crabbyBubble");
+        const crabbyChat = document.getElementById("crabbyChat");
+        const crabbyClose = document.getElementById("crabbyClose");
+        const crabbyMessage = document.getElementById("crabbyMessage");
+        const crabbyOptions = document.getElementById("crabbyOptions");
+
+        crabbyBubble.addEventListener("click", () => {
+            crabbyChat.style.display =
+                crabbyChat.style.display === "none"
+                    ? "block"
+                    : "none";
+        });
+
+        crabbyClose.addEventListener("click", () => {
+            crabbyChat.style.display = "none";
+        });
+
+        async function askCrabbyBot(optionId) {
+
+            const response = await fetch(
+                '@Url.Action("Respond", "CrabbyBot")',
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        optionId: optionId
+                    })
+                }
+            );
+
+            if (!response.ok) {
+                crabbyMessage.textContent =
+                    "CrabbyBot is unavailable right now.";
+                crabbyOptions.innerHTML = "";
+                return;
+            }
+
+            const data = await response.json();
+
+            crabbyMessage.textContent = data.message;
+            crabbyOptions.innerHTML = "";
+
+            data.options.forEach(option => {
+
+                const button =
+                    document.createElement("button");
+
+                button.type = "button";
+                button.className = "crabby-option";
+                button.textContent = option.text;
+
+                button.addEventListener(
+                    "click",
+                    () => askCrabbyBot(option.id)
+                );
+
+                crabbyOptions.appendChild(button);
+            });
+        }
+
+        askCrabbyBot("start");
+    </script>
+}
 
     @await RenderSectionAsync("Scripts", required: false)
 
