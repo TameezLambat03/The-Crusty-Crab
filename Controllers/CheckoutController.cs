@@ -81,7 +81,7 @@ namespace CrustyCrab.Controllers
                 notes += "; Add-ons: " + string.Join(", ", model.Addons);
             }
 
-            var order = await _api.CreateOrder(customer.CustomerID, model.FulfillmentMethod, item.MenuItemID, 1, notes);
+            var order = await _api.CreateOrder(customer.CustomerID, null, model.FulfillmentMethod, new[] { new ApiOrderItemRequest { MenuItemID = item.MenuItemID, Quantity = 1, Notes = notes } });
             if (order == null)
             {
                 TempData["Error"] = "We could not place your order. Please try again.";
