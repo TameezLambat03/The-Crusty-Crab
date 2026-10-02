@@ -1,4 +1,4 @@
-﻿using CrustyCrab.Models;
+using CrustyCrab.Models;
 using CrustyCrab.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,6 +11,12 @@ namespace CrustyCrab.Controllers
         public CrabbyBotController(CrustyApiClient api)
         {
             _api = api;
+        }
+
+        [HttpGet]
+        public IActionResult Index()
+        {
+            return View();
         }
 
         [HttpPost]

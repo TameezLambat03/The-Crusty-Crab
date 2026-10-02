@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using CrustyCrab.Models;
 using CrustyCrab.Services;
 
@@ -19,29 +19,53 @@ namespace CrustyCrab.Controllers
             _api = api;
         }
 
-        public async Task<IActionResult> Index(int? menuItemId, string? spiceLevel, List<string>? addons)
+        public async Task<IActionResult> Index(int? menuItemId, string? spiceLevel, List<string>? addons, bool fromCart = false)
         {
+            var customerId = HttpContext.Session.GetInt32("UserId");
             var model = new CheckoutViewModel
             {
                 SpiceLevel = string.IsNullOrWhiteSpace(spiceLevel) ? "Medium" : spiceLevel,
-                Addons = addons ?? new List<string>()
+                Addons = addons ?? new List<string>(),
+                FromCart = fromCart
             };
 
             ApiMenuItem? item = null;
-            if (menuItemId.HasValue)
+            if (fromCart)
             {
-                item = await _api.GetMenuItem(menuItemId.Value);
+                if (!customerId.HasValue)
+                    return RedirectToAction("Login", "Auth", new { returnUrl = Url.Action(nameof(Index), "Checkout", new { fromCart = true }) });
+
+                model.Cart = await _api.GetCustomerCart(customerId.Value);
+                if (model.Cart == null || !model.Cart.Items.Any())
+                {
+                    TempData["Error"] = "Your cart is empty.";
+                    return RedirectToAction("Index", "Cart");
+                }
+                model.Subtotal = model.Cart.TotalAmount;
             }
-            if (item == null)
+            else
             {
-                var menu = await _api.GetMenu();
-                item = menu?.FirstOrDefault(m => m.Availability);
+                if (menuItemId.HasValue)
+                    item = await _api.GetMenuItem(menuItemId.Value);
+
+                if (item == null)
+                {
+                    var menu = await _api.GetMenu();
+                    item = menu?.FirstOrDefault(m => m.Availability);
+                }
+
+                if (item != null)
+                {
+                    model.MenuItemId = item.MenuItemID;
+                    model.Subtotal = item.Price + AddonTotal(model.Addons);
+                }
             }
 
-            if (item != null)
+            if (customerId.HasValue)
             {
-                model.MenuItemId = item.MenuItemID;
-                model.Subtotal = item.Price + AddonTotal(model.Addons);
+                model.Addresses = await _api.GetCustomerAddresses(customerId.Value) ?? new List<ApiDeliveryAddress>();
+                model.PaymentMethods = await _api.GetPaymentMethods() ?? new List<ApiPaymentMethod>();
+                model.PaymentMethodId = model.PaymentMethods.FirstOrDefault()?.PaymentMethodID ?? 0;
             }
 
             return View(model);
@@ -50,66 +74,128 @@ namespace CrustyCrab.Controllers
         [HttpPost]
         public async Task<IActionResult> AuthorizePayment(CheckoutViewModel model)
         {
-            var item = await _api.GetMenuItem(model.MenuItemId);
-            if (item == null || !item.Availability)
+            if (model.FromCart)
             {
-                TempData["Error"] = "That item is no longer available.";
-                return RedirectToAction(nameof(Index));
+                var cartCustomerId = HttpContext.Session.GetInt32("UserId");
+                if (!cartCustomerId.HasValue)
+                    return RedirectToAction("Login", "Auth");
+
+                model.Cart = await _api.GetCustomerCart(cartCustomerId.Value);
+                if (model.Cart == null || !model.Cart.Items.Any())
+                {
+                    TempData["Error"] = "Your cart is empty.";
+                    return RedirectToAction("Index", "Cart");
+                }
             }
 
-            var nameParts = (model.CardholderName ?? string.Empty).Trim().Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
-            var firstName = nameParts.Length > 0 ? nameParts[0] : "Guest";
-            var lastName = nameParts.Length > 1 ? nameParts[1] : "Customer";
-            var guestKey = Guid.NewGuid().ToString("N");
+            ApiMenuItem? item = null;
+            if (!model.FromCart)
+            {
+                item = await _api.GetMenuItem(model.MenuItemId);
+                if (item == null || !item.Availability)
+                {
+                    TempData["Error"] = "That item is no longer available.";
+                    return RedirectToAction(nameof(Index), new { menuItemId = model.MenuItemId, spiceLevel = model.SpiceLevel, addons = model.Addons });
+                }
+            }
 
-            var customer = await _api.CreateCustomer(
-                firstName,
-                lastName,
-                "0000000000",
-                $"guest-{guestKey}@crustycrab.local",
-                guestKey);
+            var customerId = HttpContext.Session.GetInt32("UserId");
+            ApiCustomer? customer = null;
+            if (customerId.HasValue && string.Equals(HttpContext.Session.GetString("Role"), "Customer", StringComparison.OrdinalIgnoreCase))
+            {
+                customer = await _api.GetCustomer(customerId.Value);
+            }
+            else
+            {
+                var nameParts = (model.CardholderName ?? string.Empty).Trim().Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
+                var firstName = nameParts.Length > 0 ? nameParts[0] : "Guest";
+                var lastName = nameParts.Length > 1 ? nameParts[1] : "Customer";
+                var guestKey = Guid.NewGuid().ToString("N");
+                customer = await _api.CreateCustomer(firstName, lastName, "0000000000", $"guest-{guestKey}@crustycrab.local", guestKey);
+            }
 
             if (customer == null)
             {
-                TempData["Error"] = "We could not create your order. Please try again.";
-                return RedirectToAction(nameof(Index), new { menuItemId = model.MenuItemId, spiceLevel = model.SpiceLevel });
+                TempData["Error"] = "We could not create your order. Please sign in and try again.";
+                return RedirectToAction(nameof(Index), new { menuItemId = model.MenuItemId, spiceLevel = model.SpiceLevel, addons = model.Addons });
             }
 
-            var notes = $"Spice: {model.SpiceLevel}";
-            if (model.Addons != null && model.Addons.Count > 0)
+            if (string.Equals(model.FulfillmentMethod, "Delivery", StringComparison.OrdinalIgnoreCase) && !model.DeliveryAddressId.HasValue)
             {
-                notes += "; Add-ons: " + string.Join(", ", model.Addons);
+                TempData["Error"] = "Select a delivery address before placing a delivery order.";
+                return RedirectToAction(nameof(Index), new { menuItemId = model.MenuItemId, spiceLevel = model.SpiceLevel, addons = model.Addons });
             }
 
-            var order = await _api.CreateOrder(customer.CustomerID, null, model.FulfillmentMethod, new[] { new ApiOrderItemRequest { MenuItemID = item.MenuItemID, Quantity = 1, Notes = notes } });
+            List<ApiOrderItemRequest> orderItems;
+            if (model.FromCart && model.Cart != null)
+            {
+                orderItems = model.Cart.Items.Select(cartItem => new ApiOrderItemRequest
+                {
+                    MenuItemID = cartItem.MenuItemID,
+                    Quantity = cartItem.Quantity
+                }).ToList();
+            }
+            else
+            {
+                var notes = $"Spice: {model.SpiceLevel}";
+                if (model.Addons.Count > 0)
+                    notes += "; Add-ons: " + string.Join(", ", model.Addons);
+
+                orderItems = new List<ApiOrderItemRequest>
+                {
+                    new ApiOrderItemRequest
+                    {
+                        MenuItemID = item!.MenuItemID,
+                        Quantity = 1,
+                        Notes = notes
+                    }
+                };
+            }
+
+            var order = await _api.CreateOrder(
+                customer.CustomerID,
+                model.DeliveryAddressId,
+                model.FulfillmentMethod,
+                orderItems);
+
             if (order == null)
             {
                 TempData["Error"] = "We could not place your order. Please try again.";
-                return RedirectToAction(nameof(Index), new { menuItemId = model.MenuItemId, spiceLevel = model.SpiceLevel });
+                return RedirectToAction(nameof(Index), new { menuItemId = model.MenuItemId, spiceLevel = model.SpiceLevel, addons = model.Addons });
             }
 
-            var methods = await _api.GetPaymentMethods() ?? new List<ApiPaymentMethod>();
-            var method = methods.FirstOrDefault(m => m.MethodName.Contains("Card", StringComparison.OrdinalIgnoreCase))
+            var methods = model.PaymentMethods.Count > 0
+                ? model.PaymentMethods
+                : await _api.GetPaymentMethods() ?? new List<ApiPaymentMethod>();
+            var method = methods.FirstOrDefault(m => m.PaymentMethodID == model.PaymentMethodId)
+                         ?? methods.FirstOrDefault(m => m.MethodName.Contains("Card", StringComparison.OrdinalIgnoreCase))
                          ?? methods.FirstOrDefault()
                          ?? await _api.CreatePaymentMethod("Card");
 
             if (method == null)
             {
                 TempData["Error"] = "Payment is unavailable right now. Please try again.";
-                return RedirectToAction(nameof(Index), new { menuItemId = model.MenuItemId, spiceLevel = model.SpiceLevel });
+                return RedirectToAction(nameof(Index), new { menuItemId = model.MenuItemId, spiceLevel = model.SpiceLevel, addons = model.Addons });
             }
 
-            var subtotal = item.Price + AddonTotal(model.Addons);
+            var subtotal = model.FromCart && model.Cart != null
+                ? model.Cart.TotalAmount
+                : item!.Price + AddonTotal(model.Addons);
             var fee = model.FulfillmentMethod == "Delivery" ? 50.00m : 0.00m;
-
             var payment = await _api.CreatePayment(order.OrderID, method.PaymentMethodID, subtotal + fee);
             if (payment == null)
             {
                 TempData["Error"] = "Your payment could not be processed. Please try again.";
-                return RedirectToAction(nameof(Index), new { menuItemId = model.MenuItemId, spiceLevel = model.SpiceLevel });
+                return RedirectToAction(nameof(Index), new { menuItemId = model.MenuItemId, spiceLevel = model.SpiceLevel, addons = model.Addons });
             }
 
             await _api.UpdatePaymentStatus(payment.PaymentID, "Paid");
+
+            if (model.FromCart && model.Cart != null)
+            {
+                foreach (var cartItem in model.Cart.Items)
+                    await _api.RemoveCartItem(cartItem.CartItemID);
+            }
 
             return RedirectToAction("Review", "Menu");
         }
