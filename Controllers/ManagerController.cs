@@ -42,7 +42,13 @@ namespace CrustyCrab.Controllers
                 ViewData["ApiError"] = "Some portal data is unavailable right now.";
             }
 
-            model.MenuItems = menu ?? new List<ApiMenuItem>();
+            model.MenuItems = (menu ?? new List<ApiMenuItem>())
+     .Select(item =>
+     {
+         item.ImageUrl = _api.ResolveApiUrl(item.ImageUrl);
+         return item;
+     })
+     .ToList();
             model.InventoryItems = (menu ?? new List<ApiMenuItem>())
                 .Select(m => new InventoryItem
                 {

@@ -33,8 +33,32 @@ namespace CrustyCrab.Services
 
         public Task<ApiMenuItem?> UpdateMenuItem(ApiMenuItem item) => Put<ApiMenuItem>($"api/menu/{item.MenuItemID}", item);
 
-        public Task<bool> DeleteMenuItem(int id) => Delete($"api/menu/{id}");
+        public async Task<(bool Success, string? ErrorMessage)> DeleteMenuItem(int id)
+        {
+            try
+            {
+                var response = await _http.DeleteAsync($"api/menu/{id}");
 
+                if (response.IsSuccessStatusCode)
+                {
+                    return (true, null);
+                }
+
+                var error = await response.Content.ReadFromJsonAsync<ApiErrorResponse>();
+
+                return (false, error?.Message ?? "The menu item could not be deleted.");
+            }
+            catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException or System.Text.Json.JsonException)
+            {
+                _logger.LogWarning(ex, "DELETE api/menu/{Id} failed", id);
+
+                return (false, "The API could not be reached.");
+            }
+        }
+        public class ApiErrorResponse
+        {
+            public string Message { get; set; } = string.Empty;
+        }
         public async Task<List<ApiOrder>?> GetOrders() => await Get<List<ApiOrder>>("api/order");
 
         public Task<ApiOrder?> GetOrder(int id) => Get<ApiOrder>($"api/order/{id}");

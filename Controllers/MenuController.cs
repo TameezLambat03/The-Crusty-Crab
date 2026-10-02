@@ -68,6 +68,22 @@ namespace CrustyCrab.Controllers
             return RedirectToAction("Portal", "Manager");
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Edit(int id)
+        {
+            if (!IsAdmin())
+                return RedirectToAction("Login", "Auth");
+
+            var item = await _api.GetMenuItem(id);
+
+            if (item == null)
+            {
+                TempData["Error"] = "The menu item could not be loaded.";
+                return RedirectToAction("Portal", "Manager");
+            }
+
+            return View(item);
+        }
         [HttpPost]
         public async Task<IActionResult> UpdateForm(int id, ApiMenuItem item)
         {
@@ -83,8 +99,20 @@ namespace CrustyCrab.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteForm(int id)
         {
-            if (IsAdmin())
-                await _api.DeleteMenuItem(id);
+            if (!IsAdmin())
+                return RedirectToAction("Login", "Auth");
+
+            var result = await _api.DeleteMenuItem(id);
+
+            if (result.Success)
+            {
+                TempData["Success"] = "Menu item deleted.";
+            }
+            else
+            {
+                TempData["Error"] = result.ErrorMessage;
+            }
+
             return RedirectToAction("Portal", "Manager");
         }
 
@@ -102,11 +130,15 @@ namespace CrustyCrab.Controllers
             var updated = await _api.UpdateMenuItem(item);
             return updated == null ? NotFound() : Json(updated);
         }
-
         [HttpDelete]
         public async Task<IActionResult> Delete(int id)
         {
-            return await _api.DeleteMenuItem(id) ? NoContent() : NotFound();
+            var result = await _api.DeleteMenuItem(id);
+
+            if (!result.Success)
+                return NotFound(new { message = result.ErrorMessage });
+
+            return NoContent();
         }
 
         public IActionResult Review()
