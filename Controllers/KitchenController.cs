@@ -17,6 +17,14 @@ namespace CrustyCrab.Controllers
 
         public async Task<IActionResult> Kds()
         {
+            if (!HttpContext.Session.GetInt32("UserId").HasValue ||
+    !string.Equals(
+        HttpContext.Session.GetString("Role"),
+        "Admin",
+        StringComparison.OrdinalIgnoreCase))
+            {
+                return RedirectToAction("Login", "Manager");
+            }
             var orders = await _api.GetOrders();
             if (orders == null)
             {
@@ -32,6 +40,35 @@ namespace CrustyCrab.Controllers
             return View(active);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Tracker()
+        {
+            if (!HttpContext.Session.GetInt32("UserId").HasValue ||
+                !string.Equals(
+                    HttpContext.Session.GetString("Role"),
+                    "Customer",
+                    StringComparison.OrdinalIgnoreCase))
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            var orders = await _api.GetOrders();
+
+            if (orders == null)
+            {
+                ViewData["ApiError"] = "Your order status is currently unavailable.";
+                return View(new List<ApiOrder>());
+            }
+
+            var userId = HttpContext.Session.GetInt32("UserId");
+
+            var customerOrders = orders
+                .Where(o => o.CustomerID == userId)
+                .OrderByDescending(o => o.OrderDate)
+                .ToList();
+
+            return View(customerOrders);
+        }
         [HttpPost]
         public async Task<IActionResult> MarkReady(int orderId)
         {

@@ -2,13 +2,7 @@
 @{
     ViewData["Title"] = "Staff Administration";
 }
-<div class="topbar">
-    <div class="topbar-inner wide">
-        <a asp-controller="Manager" asp-action="Portal" class="back-link">&larr; Manager Portal</a>
-        <span class="topbar-title">Staff &amp; Admin Management</span>
-        <form asp-controller="Auth" asp-action="Logout" method="post"><button class="btn-ghost" type="submit">Sign Out</button></form>
-    </div>
-</div>
+
 <div class="portal-wrap">
     @if (TempData["Error"] is string error)
     {

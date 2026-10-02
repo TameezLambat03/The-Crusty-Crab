@@ -3,15 +3,156 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <title>@ViewData["Title"] - The Crusty Crab</title>
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+          rel="stylesheet" />
+
+    <link rel="stylesheet"
+          href="~/css/site.css"
+          asp-append-version="true" />
 </head>
+
 <body>
+
+    @{
+        var userId = Context.Session.GetInt32("UserId");
+        var role = Context.Session.GetString("Role");
+
+        var isLoggedIn = userId.HasValue;
+        var isAdmin = string.Equals(
+            role,
+            "Admin",
+            StringComparison.OrdinalIgnoreCase);
+
+        var isCustomer = string.Equals(
+            role,
+            "Customer",
+            StringComparison.OrdinalIgnoreCase);
+    }
+
+    <div class="topbar">
+        <div class="topbar-inner wide">
+
+            <a asp-controller="Home"
+               asp-action="Index"
+               class="brand">
+
+                <span class="brand-icon">
+                    <img src="~/images/logo.png"
+                         alt="The Crusty Crab logo" />
+                </span>
+
+                <span>
+                    <span class="brand-name" style="display:block">
+                        The Crusty Crab
+                    </span>
+
+                    <span class="brand-sub" style="display:block">
+                        Montgomery Park &bull; Randburg
+                    </span>
+                </span>
+
+            </a>
+
+            <div class="pill-nav">
+
+                <a asp-controller="Home"
+                   asp-action="Index">
+                    Overview
+                </a>
+
+                <a asp-controller="Menu"
+                   asp-action="Index">
+                    Menu
+                </a>
+
+                <a asp-controller="Cart"
+                   asp-action="Index">
+                    Cart
+                </a>
+
+                <a asp-controller="Checkout"
+                   asp-action="Index">
+                    Checkout
+                </a>
+
+                <a asp-controller="Kitchen"
+                   asp-action="Tracker">
+                    Live Tracker
+                </a>
+
+                <a asp-controller="Menu"
+                   asp-action="Review">
+                    Feedback
+                </a>
+
+                @if (isAdmin)
+                {
+                    <a asp-controller="Kitchen"
+                       asp-action="Kds">
+                        Kitchen KDS
+                    </a>
+
+                    <a asp-controller="Manager"
+                       asp-action="Portal">
+                        Manager Portal
+                    </a>
+
+                    <a asp-controller="AdminStaff"
+                       asp-action="Index">
+                        Staff &amp; Admin
+                    </a>
+                }
+
+            </div>
+
+            <div style="display:flex;gap:10px;align-items:center;">
+
+                @if (!isLoggedIn)
+                {
+                    <a asp-controller="Auth"
+                       asp-action="Login"
+                       class="btn-blue">
+                        Customer Login
+                    </a>
+
+                    <a asp-controller="Manager"
+                       asp-action="Login"
+                       class="btn-blue">
+                        Admin Login
+                    </a>
+                }
+                else
+                {
+                    <form asp-controller="Auth"
+                          asp-action="Logout"
+                          method="post"
+                          style="margin:0;">
+
+                        <button type="submit"
+                                class="btn-blue">
+                            Logout
+                        </button>
+
+                    </form>
+                }
+
+            </div>
+
+        </div>
+    </div>
+
     @RenderBody()
-    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    <script src="~/js/site.js"
+            asp-append-version="true"></script>
+
     @await RenderSectionAsync("Scripts", required: false)
+
 </body>
 </html>

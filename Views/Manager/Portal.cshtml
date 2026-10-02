@@ -4,25 +4,7 @@
     ViewData["Title"] = "Manager Portal";
 }
 
-<div class="topbar">
-    <div class="topbar-inner wide">
-        <a asp-controller="Kitchen" asp-action="Kds" class="back-link">&larr; Back</a>
 
-        <span class="topbar-title">Manager Portal</span>
-
-        <div style="display:flex;gap:10px;align-items:center;">
-            <a asp-controller="AdminStaff" asp-action="Index" class="btn-blue">
-                Staff &amp; Admin
-            </a>
-
-            <form asp-controller="Auth" asp-action="Logout" method="post" style="margin:0;">
-                <button type="submit" class="btn-blue">
-                    Logout
-                </button>
-            </form>
-        </div>
-    </div>
-</div>
 
 
 <!-- PAGE HEADER -->

@@ -1,53 +1,93 @@
-﻿ @{
+﻿@{
     ViewData["Title"] = "Overview";
 }
-<div class="topbar">
-    <div class="topbar-inner wide">
-        <a asp-controller="Home" asp-action="Index" class="brand">
-            <span class="brand-icon">
-                <img src="~/images/logo.png" alt="The Crusty Crab logo" />
-            </span>
-            <span>
-                <span class="brand-name" style="display:block">The Crusty Crab</span>
-                <span class="brand-sub" style="display:block">Montgomery Park &bull; Randburg</span>
-            </span>
-        </a>
-        <nav class="pill-nav">
-            <a asp-controller="Home" asp-action="Index" class="active">Overview</a>
-            <a asp-controller="Menu" asp-action="Index">Menu</a>
-            <a asp-controller="Menu" asp-action="Customise" asp-route-id="1">Customise</a>
-            <a asp-controller="Checkout" asp-action="Index">Checkout</a>
-            <a asp-controller="Kitchen" asp-action="Kds">Live Tracker</a>
-            <a asp-controller="Kitchen" asp-action="Kds">Kitchen KDS</a>
-            <a asp-controller="Auth" asp-action="Login">Customer Login</a>
-            <a asp-controller="Manager" asp-action="Login">Admin Portal</a>
-            <a asp-controller="Menu" asp-action="Review">Feedback</a>
-        </nav>
-        <a asp-controller="Menu" asp-action="Index" class="btn-blue">Order Now</a>
-    </div>
-</div>
+
 <section class="hero">
+
     <div>
-        <span class="hero-chip">Product-Ready Digital Architecture Suite</span>
-        <h1>Authentic Cajun Seafood Boils,<br /><span class="grad">Engineered for Excellence.</span></h1>
-        <p>Explore the complete production-grade digital ordering ecosystem for The Crusty Crab in Montgomery Park, Randburg. Fully responsive across customer discovery, customisation, kitchen KDS, and management dashboards.</p>
+        <span class="hero-chip">
+            Fresh Cajun Seafood &bull; Montgomery Park
+        </span>
+
+        <h1>
+            Authentic Cajun Seafood Boils,<br />
+            <span class="grad">The Best in Johannesburg.</span>
+        </h1>
+
+        <p>
+            Explore our menu, customise your order, and enjoy fresh Cajun
+            seafood prepared with bold flavours at The Crusty Crab.
+        </p>
+
         <div class="hero-actions">
-            <a asp-controller="Menu" asp-action="Index" class="btn-blue btn-launch">Launch Customer App &rarr;</a>
-            <a asp-controller="Kitchen" asp-action="Kds" class="btn-ghost">Open Kitchen KDS &#9635;</a>
+
+            <a asp-controller="Menu"
+               asp-action="Index"
+               class="btn-blue btn-launch">
+                Order Now &rarr;
+            </a>
+
         </div>
     </div>
+
     <div class="hub">
+
         <div class="hub-head">
-            <span class="eyebrow">System Navigation Hub</span>
-            <span class="hub-tag mono">v2.6 Ready</span>
+            <span class="eyebrow">
+                Explore The Crusty Crab
+            </span>
+
+            <span class="hub-tag mono">
+                Fresh &bull; Bold &bull; Cajun
+            </span>
         </div>
+
         <div class="hub-grid">
-            <a asp-controller="Menu" asp-action="Index" class="hub-item">1. Menu Catalog <span>&rsaquo;</span></a>
-            <a asp-controller="Menu" asp-action="Customise" asp-route-id="1" class="hub-item">2. Customiser <span>&rsaquo;</span></a>
-            <a asp-controller="Checkout" asp-action="Index" class="hub-item">3. Checkout &amp; Pay <span>&rsaquo;</span></a>
-            <a asp-controller="Kitchen" asp-action="Kds" class="hub-item">4. Live Tracker <span>&rsaquo;</span></a>
-            <a asp-controller="Kitchen" asp-action="Kds" class="hub-item">5. Kitchen KDS <span>&rsaquo;</span></a>
-            <a asp-controller="Manager" asp-action="Portal" class="hub-item">6. Admin Portal <span>&rsaquo;</span></a>
+
+            <a asp-controller="Menu"
+               asp-action="Index"
+               class="hub-item">
+                1. Browse Menu
+                <span>&rsaquo;</span>
+            </a>
+
+            <a asp-controller="Menu"
+               asp-action="Customise"
+               asp-route-id="1"
+               class="hub-item">
+                2. Customise Your Order
+                <span>&rsaquo;</span>
+            </a>
+
+            <a asp-controller="Cart"
+               asp-action="Index"
+               class="hub-item">
+                3. Your Cart
+                <span>&rsaquo;</span>
+            </a>
+
+            <a asp-controller="Checkout"
+               asp-action="Index"
+               class="hub-item">
+                4. Checkout &amp; Pay
+                <span>&rsaquo;</span>
+            </a>
+
+            <a asp-controller="Kitchen"
+               asp-action="Tracker"
+               class="hub-item">
+                5. Track Your Order
+                <span>&rsaquo;</span>
+            </a>
+
+            <a asp-controller="Menu"
+               asp-action="Review"
+               class="hub-item">
+                6. Leave Feedback
+                <span>&rsaquo;</span>
+            </a>
+
         </div>
     </div>
-</section> 
+
+</section>

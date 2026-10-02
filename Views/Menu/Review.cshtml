@@ -1,19 +1,35 @@
 ﻿@{
     ViewData["Title"] = "Customer Feedback";
 }
-<div class="topbar">
-    <div class="topbar-inner wide">
-        <a asp-controller="Checkout" asp-action="Index" class="back-link">&larr; Back</a>
-        <span class="topbar-title">Stage 8 Customer Feedback</span>
-        <span class="top-cta-wrap"><a asp-controller="Home" asp-action="Index" class="btn-blue">Return Home &rarr;</a></span>
-    </div>
-</div>
+
 <div class="narrow stack-top">
+
     <div class="card-panel review-card">
-        <span class="eyebrow">Customer Review Suite</span>
-        <h2>How was your seafood boil?</h2>
-        <div class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
-        <div class="field"><textarea placeholder="Tell us about the Cajun garlic butter spice, portion sizes, or delivery speed..."></textarea></div>
-        <a asp-controller="Home" asp-action="Index" class="btn-blue btn-block">Submit Review &amp; Return Home</a>
+
+        <span class="eyebrow">
+            Customer Review Suite
+        </span>
+
+        <h2>
+            How was your seafood boil?
+        </h2>
+
+        <div class="stars">
+            &#9733;&#9733;&#9733;&#9733;&#9733;
+        </div>
+
+        <div class="field">
+
+            <textarea placeholder="Tell us about the Cajun garlic butter spice, portion sizes, or delivery speed..."></textarea>
+
+        </div>
+
+        <a asp-controller="Home"
+           asp-action="Index"
+           class="btn-blue btn-block">
+            Submit Review &amp; Return Home
+        </a>
+
     </div>
+
 </div>

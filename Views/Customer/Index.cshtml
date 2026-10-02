@@ -2,15 +2,7 @@
 @{
     ViewData["Title"] = "My Account";
 }
-<div class="topbar">
-    <div class="topbar-inner wide">
-        <partial name="_Brand" />
-        <div style="display:flex;gap:10px;align-items:center;">
-            <a asp-controller="Cart" asp-action="Index" class="btn-blue">Cart</a>
-            <form asp-controller="Auth" asp-action="Logout" method="post"><button class="btn-ghost" type="submit">Sign Out</button></form>
-        </div>
-    </div>
-</div>
+
 <div class="portal-wrap">
     <div class="kds-head" style="margin-bottom:0">
         <div>
@@ -107,6 +99,14 @@
     </div>
     <div class="portal-card" style="margin-top:24px;">
         <h3>Account Management</h3>
-        <form asp-action="DeleteAccount" method="post"><button class="stock-btn out" type="submit">Delete Account</button></form>
+       <form asp-action="DeleteAccount"
+      method="post"
+      onsubmit="return confirm('Are you sure you want to delete your account? This action cannot be undone.');">
+
+    <button class="stock-btn out" type="submit">
+        Delete Account
+    </button>
+
+</form>
     </div>
 </div>
