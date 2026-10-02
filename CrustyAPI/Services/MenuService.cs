@@ -55,20 +55,26 @@ public class MenuService
 
         return existingItem;
     }
-    public async Task<bool> DeleteMenuItem(int id)
+    public async Task<(bool Success, bool Blocked)> DeleteMenuItem(int id)
     {
         var menuItem = await _context.MenuItems
             .FirstOrDefaultAsync(m => m.MenuItemID == id);
 
         if (menuItem == null)
         {
-            return false;
+            return (false, false);
         }
 
         _context.MenuItems.Remove(menuItem);
 
-        await _context.SaveChangesAsync();
-
-        return true;
+        try
+        {
+            await _context.SaveChangesAsync();
+            return (true, false);
+        }
+        catch (DbUpdateException)
+        {
+            return (false, true);
+        }
     }
 }

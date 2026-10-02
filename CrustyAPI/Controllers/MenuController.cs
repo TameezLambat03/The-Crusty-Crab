@@ -70,11 +70,22 @@ public class MenuController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteMenuItem(int id)
     {
-        var deleted = await _menuService.DeleteMenuItem(id);
+        var result = await _menuService.DeleteMenuItem(id);
 
-        if (!deleted)
+        if (result.Blocked)
         {
-            return NotFound(new { message = "Menu item not found" });
+            return Conflict(new
+            {
+                message = "This menu item cannot be deleted because it is used in an existing cart or order. Mark it as unavailable instead."
+            });
+        }
+
+        if (!result.Success)
+        {
+            return NotFound(new
+            {
+                message = "Menu item not found"
+            });
         }
 
         return NoContent();
