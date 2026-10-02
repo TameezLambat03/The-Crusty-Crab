@@ -7,7 +7,9 @@ namespace CrustyCrab
             var builder = WebApplication.CreateBuilder(args);
 
             builder.Services.AddControllersWithViews();
+
             builder.Services.AddDistributedMemoryCache();
+
             builder.Services.AddSession(options =>
             {
                 options.IdleTimeout = TimeSpan.FromHours(8);
@@ -15,9 +17,18 @@ namespace CrustyCrab
                 options.Cookie.IsEssential = true;
             });
 
+            var apiBaseUrl = builder.Configuration["Api:BaseUrl"];
+
+            if (string.IsNullOrWhiteSpace(apiBaseUrl))
+            {
+                throw new InvalidOperationException(
+                    "Api:BaseUrl is not configured."
+                );
+            }
+
             builder.Services.AddHttpClient<CrustyCrab.Services.CrustyApiClient>(client =>
             {
-                client.BaseAddress = new Uri(builder.Configuration["Api:BaseUrl"] ?? "http://localhost:5083/");
+                client.BaseAddress = new Uri(apiBaseUrl);
                 client.Timeout = TimeSpan.FromSeconds(15);
             });
 
@@ -35,6 +46,7 @@ namespace CrustyCrab
             app.UseAuthorization();
 
             app.MapStaticAssets();
+
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}")

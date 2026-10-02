@@ -59,16 +59,16 @@ a { color: inherit; text-decoration: none; }
 .top-cta-wrap { width: 160px; display: flex; justify-content: flex-end; }
 
 .brand { display: flex; align-items: center; gap: 12px; }
-
 .brand-icon {
+
     width: 30px;
     height: 30px;
     border-radius: 8px;
-    background: linear-gradient(135deg, #2563eb, #06b6d4);
+    background: transparent;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 0 18px rgba(37, 99, 235, .45);
+    box-shadow: none;
 }
 
 .brand-icon svg { width: 16px; height: 16px; }
@@ -573,4 +573,9 @@ a { color: inherit; text-decoration: none; }
 @media (max-width: 560px) {
     .menu-grid, .opt-row { grid-template-columns: 1fr; }
     .hero h1 { font-size: 34px; }
+}
+.brand-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
 }

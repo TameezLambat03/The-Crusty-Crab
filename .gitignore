@@ -5,3 +5,4 @@ obj/
 *.user
 *.suo
 "@ | Set-Content .gitignore
+appsettings.Development.json

@@ -11,7 +11,7 @@
 </div>
 <div class="narrow stack-top">
     <div class="card-panel" style="max-width:520px;margin:0 auto;">
-        <span class="eyebrow">Customer &amp; Staff Access</span>
+        <span class="eyebrow">Customer Access</span>
         <h2>Sign In</h2>
         @if (TempData["Error"] is string error)
         {
@@ -27,10 +27,7 @@
                 <label>Password</label>
                 <input asp-for="Password" type="password" required />
             </div>
-            <label class="addon" style="margin-bottom:18px;">
-                <span><strong>Admin / Staff login</strong><small>Use this for the management portal.</small></span>
-                <input type="checkbox" name="admin" value="true" />
-            </label>
+            
             <button type="submit" class="btn-blue btn-block">Sign In</button>
         </form>
         <div style="margin-top:18px;text-align:center;">

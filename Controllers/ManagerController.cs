@@ -13,10 +13,24 @@ namespace CrustyCrab.Controllers
             _api = api;
         }
 
+        [HttpGet]
+        public IActionResult Login()
+        {
+            if (HttpContext.Session.GetInt32("UserId").HasValue &&
+                string.Equals(
+                    HttpContext.Session.GetString("Role"),
+                    "Admin",
+                    StringComparison.OrdinalIgnoreCase))
+            {
+                return RedirectToAction(nameof(Portal));
+            }
+
+            return View(new LoginRequest());
+        }
         public async Task<IActionResult> Portal()
         {
             if (!HttpContext.Session.GetInt32("UserId").HasValue || !string.Equals(HttpContext.Session.GetString("Role"), "Admin", StringComparison.OrdinalIgnoreCase))
-                return RedirectToAction("Login", "Auth", new { returnUrl = Url.Action(nameof(Portal), "Manager") });
+                return RedirectToAction(nameof(Login));
 
             var model = new ManagerPortalViewModel();
 
