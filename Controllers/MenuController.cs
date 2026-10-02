@@ -13,7 +13,7 @@ namespace CrustyCrab.Controllers
             _api = api;
         }
 
-        private MenuItem ToMenuItem(ApiMenuItem item)
+        internal MenuItem ToMenuItem(ApiMenuItem item)
         {
             return new MenuItem
             {
@@ -26,23 +26,6 @@ namespace CrustyCrab.Controllers
                 ImageUrl = _api.ResolveApiUrl(item.ImageUrl)
             };
         }
-
-        //private static string ResolveImage(string? url)
-        //{
-        //    if (string.IsNullOrWhiteSpace(url))
-        //    {
-        //        return string.Empty;
-        //    }
-        //    if (url.StartsWith("http", StringComparison.OrdinalIgnoreCase) || url.StartsWith("~/"))
-        //    {
-        //        return url;
-        //    }
-        //    if (url.StartsWith("/"))
-        //    {
-        //        return "~" + url;
-        //    }
-        //    return "~/images/" + url;
-        //}
 
         public async Task<IActionResult> Index(string category = "All Items")
         {
@@ -77,6 +60,27 @@ namespace CrustyCrab.Controllers
                 return RedirectToAction(nameof(Index));
             }
             return View(ToMenuItem(apiItem));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] ApiMenuItem item)
+        {
+            var created = await _api.CreateMenuItem(item);
+            return created == null ? BadRequest() : Json(created);
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> Update(int id, [FromBody] ApiMenuItem item)
+        {
+            item.MenuItemID = id;
+            var updated = await _api.UpdateMenuItem(item);
+            return updated == null ? NotFound() : Json(updated);
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> Delete(int id)
+        {
+            return await _api.DeleteMenuItem(id) ? NoContent() : NotFound();
         }
 
         public IActionResult Review()
