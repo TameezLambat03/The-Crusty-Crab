@@ -1,4 +1,4 @@
-﻿@model CrustyCrab.Models.CheckoutViewModel
+@model CrustyCrab.Models.CheckoutViewModel
 @{
     ViewData["Title"] = "Checkout Suite";
 }
@@ -6,7 +6,7 @@
     <div class="topbar-inner wide">
         <a asp-controller="Menu" asp-action="Customise" asp-route-id="1" class="back-link">&larr; Back</a>
         <span class="topbar-title">US-03 / US-04 Checkout Suite</span>
-        <span class="top-cta-wrap"><a asp-controller="Menu" asp-action="Review" class="btn-green">Complete &rarr;</a></span>
+        <span class="top-cta-wrap"><a asp-controller="Customer" asp-action="Index" class="btn-blue">Account</a></span>
     </div>
 </div>
 <div class="narrow stack-top">
@@ -25,6 +25,7 @@
         <form asp-action="AuthorizePayment" method="post">
             <input type="hidden" asp-for="MenuItemId" />
             <input type="hidden" asp-for="SpiceLevel" />
+            <input type="hidden" asp-for="FromCart" />
             @foreach (var addon in Model.Addons)
             {
                 <input type="hidden" name="Addons" value="@addon" />
@@ -42,12 +43,41 @@
                             <label for="c2"><strong>Delivery</strong><small>Randburg Area (+R 50.00)</small></label>
                         </div>
                     </div>
+                    @if (Model.Addresses.Any())
+                    {
+                        <div class="field" style="margin-top:18px;">
+                            <label>Delivery Address</label>
+                            <select asp-for="DeliveryAddressId">
+                                <option value="">Select an address</option>
+                                @foreach (var address in Model.Addresses)
+                                {
+                                    <option value="@address.DeliveryAddressID">@address.HouseNumber @address.StreetName, @address.Suburb</option>
+                                }
+                            </select>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="empty-note" style="margin-top:18px;">Sign in and add a delivery address in My Account to use delivery.</div>
+                    }
                 </div>
                 <div class="pay-panel">
                     <div class="pay-head">
                         <h4>Payment Gateway<br />(US-04)</h4>
                         <span class="pay-icons"><i></i><i></i></span>
                     </div>
+                    @if (Model.PaymentMethods.Any())
+                    {
+                        <div class="field">
+                            <label>Payment Method</label>
+                            <select asp-for="PaymentMethodId">
+                                @foreach (var method in Model.PaymentMethods)
+                                {
+                                    <option value="@method.PaymentMethodID">@method.MethodName</option>
+                                }
+                            </select>
+                        </div>
+                    }
                     <div class="field"><label>Cardholder Name</label><input type="text" asp-for="CardholderName" placeholder="John Smith" required /></div>
                     <div class="field"><label>Card Number or Instant EFT Token</label><input type="text" asp-for="CardNumber" placeholder="4000 1234 5678 9010" required /></div>
                     <div class="field-row">

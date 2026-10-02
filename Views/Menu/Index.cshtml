@@ -6,7 +6,7 @@
 <div class="topbar">
     <div class="topbar-inner">
         <partial name="_Brand" />
-        <a asp-action="Customise" asp-route-id="1" class="btn-blue">View Cart / Customiser &rarr;</a>
+        <div style="display:flex;gap:10px;align-items:center;"><a asp-controller="Cart" asp-action="Index" class="btn-blue">Cart</a><a asp-action="Customise" asp-route-id="1" class="btn-blue">Customise &rarr;</a></div>
     </div>
 </div>
 <div class="page-head">
@@ -33,7 +33,7 @@
         <div class="menu-card">
             @if (!string.IsNullOrEmpty(item.ImageUrl))
             {
-                <img src="@Url.Content(item.ImageUrl)" alt="@item.Name" />
+                <img src="@item.ImageUrl" alt="@item.Name" />
             }
             <h3>@item.Name</h3>
             <p>@item.Description</p>

@@ -1,11 +1,11 @@
-﻿@{
+﻿@* @{
     ViewData["Title"] = "Overview";
 }
 <div class="topbar">
     <div class="topbar-inner wide">
         <a asp-controller="Home" asp-action="Index" class="brand">
             <span class="brand-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2.2"/><path d="M12 7.2V21M8 11h8M4.5 14c0 3.6 3.3 7 7.5 7s7.5-3.4 7.5-7"/></svg>
+                <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2.2" /><path d="M12 7.2V21M8 11h8M4.5 14c0 3.6 3.3 7 7.5 7s7.5-3.4 7.5-7" /></svg>
             </span>
             <span>
                 <span class="brand-name" style="display:block">The Crusty Crab</span>
@@ -49,4 +49,51 @@
             <a asp-controller="Manager" asp-action="Portal" class="hub-item">6. Admin Portal <span>&rsaquo;</span></a>
         </div>
     </div>
-</section>
+</section> *@
+
+@model IEnumerable<CrustyCrab.Models.OrderViewModel>
+@{
+    ViewData["Title"] = "Kitchen KDS";
+}
+<div class="topbar">
+    <div class="topbar-inner wide">
+        <a asp-controller="Home" asp-action="Index" class="back-link">&larr; Back</a>
+        <span class="topbar-title">UR-02 / US-06 Kitchen KDS</span>
+        <span class="top-cta-wrap"><a asp-controller="Manager" asp-action="Portal" class="btn-blue">Manager Portal &rarr;</a></span>
+    </div>
+</div>
+<div class="kds-wrap">
+    <div class="kds-head">
+        <div>
+            <span class="eyebrow">Kitchen &amp; Operations Suite</span>
+            <h1>Live Kitchen Display System</h1>
+        </div>
+        <span class="live">Live Feed Active</span>
+    </div>
+    @if (ViewData["ApiError"] is string kdsError)
+    {
+        <div class="api-error">@kdsError</div>
+    }
+    <div class="kds-grid">
+        @foreach (var order in Model)
+        {
+            var spiceClass = order.SpiceLevel.Contains("Hot") ? "spice-hot" : order.SpiceLevel.Contains("Mild") ? "spice-mild" : "spice-medium";
+            <div class="ticket">
+                <div class="ticket-head">
+                    <span class="ticket-id">@order.CustomerName<br />@order.OrderId.ToString("D3")</span>
+                    <span class="spice-badge mono @spiceClass">@order.SpiceLevel</span>
+                </div>
+                <div class="ticket-item">@order.ItemName</div>
+                @foreach (var addon in order.Addons)
+                {
+                    <div class="ticket-addon">+ @addon</div>
+                }
+                <div class="ticket-time mono">Ordered: @order.TimeOrdered (@order.FulfillmentMethod)</div>
+                <form asp-action="MarkReady" method="post">
+                    <input type="hidden" name="orderId" value="@order.OrderId" />
+                    <button type="submit" class="btn-green">Mark Ready &amp; Notify (US-07)</button>
+                </form>
+            </div>
+        }
+    </div>
+</div>
