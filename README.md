@@ -10,6 +10,7 @@ The project consists of multiple applications working together through a central
 
 ## 📋 Project Overview
 
+Deployed Url: crustycrab-aze3fccnc6gvfchd.southafricanorth-01.azurewebsites.net
 The Crusty Crab system is designed to simulate a modern restaurant ordering platform supporting both customers and restaurant management.
 
 ### Customer Features
