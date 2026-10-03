@@ -17,6 +17,7 @@ namespace CrustyCrab.Models
         public decimal Subtotal { get; set; }
         public List<ApiDeliveryAddress> Addresses { get; set; } = new();
         public List<ApiPaymentMethod> PaymentMethods { get; set; } = new();
+        public List<ApiCustomerPaymentMethod> SavedPaymentMethods { get; set; } = new();
         public decimal DeliveryFee => FulfillmentMethod == "Delivery" ? 50.00m : 0.00m;
         public decimal Total => Subtotal + DeliveryFee;
     }

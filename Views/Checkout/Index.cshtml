@@ -9,7 +9,6 @@
     <div class="card-panel checkout-card">
 
         <div class="checkout-head">
-
             <div>
                 <span class="eyebrow">
                     Secure Order Processing
@@ -23,7 +22,6 @@
             <span class="ssl">
                 &#128274; 256-Bit SSL Encrypted
             </span>
-
         </div>
 
         @if (TempData["Error"] is string checkoutError)
@@ -172,6 +170,47 @@
 
                     <div id="cardFields">
 
+                        @if (Model.SavedPaymentMethods.Any())
+                        {
+                            <div class="field">
+
+                                <label>
+                                    Saved Card
+                                </label>
+
+                                <select id="savedCard">
+
+                                    <option value="">
+                                        Use a new card
+                                    </option>
+
+                                    @foreach (var card in Model.SavedPaymentMethods)
+                                    {
+                                        var maskedNumber =
+                                            $"•••• •••• •••• {card.CardLast4}";
+
+                                        var expiry =
+                                            card.ExpiryMonth.HasValue &&
+                                            card.ExpiryYear.HasValue
+                                                ? $"{card.ExpiryMonth:00} / {card.ExpiryYear % 100:00}"
+                                                : "";
+
+                                        <option value="@card.CustomerPaymentMethodID"
+                                                data-cardholder="@card.CardholderName"
+                                                data-last4="@card.CardLast4"
+                                                data-expiry="@expiry"
+                                                data-payment-method="@card.PaymentMethodID">
+
+                                            @card.MethodName — @maskedNumber
+
+                                        </option>
+                                    }
+
+                                </select>
+
+                            </div>
+                        }
+
                         <div class="field">
 
                             <label>
@@ -202,6 +241,10 @@
 
                             <div class="field">
 
+                                <label>
+                                    Expiry Date
+                                </label>
+
                                 <input type="text"
                                        asp-for="ExpiryDate"
                                        id="expiryDate"
@@ -210,6 +253,10 @@
                             </div>
 
                             <div class="field">
+
+                                <label>
+                                    CVC
+                                </label>
 
                                 <input type="text"
                                        asp-for="Cvc"
@@ -232,7 +279,9 @@
 
                     <button type="submit"
                             class="btn-green btn-block">
+
                         Authorize Payment &amp; Generate Receipt
+
                     </button>
 
                 </div>
@@ -245,17 +294,79 @@
 
 </div>
 
-@section Scripts
-{
-    <script>
-        const paymentMethod = document.getElementById("paymentMethod");
-        const cardFields = document.getElementById("cardFields");
-        const cashMessage = document.getElementById("cashMessage");
+@section Scripts {
 
-        const cardholderName = document.getElementById("cardholderName");
-        const cardNumber = document.getElementById("cardNumber");
-        const expiryDate = document.getElementById("expiryDate");
-        const cvc = document.getElementById("cvc");
+    <script>
+
+        const paymentMethod =
+            document.getElementById("paymentMethod");
+
+        const savedCard =
+            document.getElementById("savedCard");
+
+        const cardFields =
+            document.getElementById("cardFields");
+
+        const cashMessage =
+            document.getElementById("cashMessage");
+
+        const cardholderName =
+            document.getElementById("cardholderName");
+
+        const cardNumber =
+            document.getElementById("cardNumber");
+
+        const expiryDate =
+            document.getElementById("expiryDate");
+
+        const cvc =
+            document.getElementById("cvc");
+
+
+        function loadSavedCard() {
+
+            if (!savedCard) {
+                return;
+            }
+
+            const selectedOption =
+                savedCard.options[savedCard.selectedIndex];
+
+            if (!selectedOption ||
+                !selectedOption.value) {
+
+                cardholderName.value = "";
+                cardNumber.value = "";
+                expiryDate.value = "";
+                cvc.value = "";
+
+                cardNumber.placeholder =
+                    "4000 1234 5678 9010";
+
+                return;
+            }
+
+            cardholderName.value =
+                selectedOption.dataset.cardholder || "";
+
+            const last4 =
+                selectedOption.dataset.last4 || "";
+
+            cardNumber.value =
+                last4
+                    ? `•••• •••• •••• ${last4}`
+                    : "";
+
+            expiryDate.value =
+                selectedOption.dataset.expiry || "";
+
+            // CVC is never stored with a saved card.
+            cvc.value = "";
+
+            cardNumber.placeholder =
+                "Saved card ending in " + last4;
+        }
+
 
         function updatePaymentFields() {
 
@@ -264,12 +375,17 @@
             }
 
             const selectedText =
-                paymentMethod.options[paymentMethod.selectedIndex]
+                paymentMethod
+                    .options[paymentMethod.selectedIndex]
                     .text
                     .toLowerCase();
 
-            const isCash = selectedText.includes("cash");
-            const isCard = selectedText.includes("card");
+            const isCash =
+                selectedText.includes("cash");
+
+            const isCard =
+                selectedText.includes("card");
+
 
             if (isCash) {
 
@@ -302,12 +418,33 @@
                 cardNumber.required = false;
                 expiryDate.required = false;
                 cvc.required = false;
+
             }
+
         }
 
-        if (paymentMethod) {
-            paymentMethod.addEventListener("change", updatePaymentFields);
-            updatePaymentFields();
+
+        if (savedCard) {
+
+            savedCard.addEventListener(
+                "change",
+                loadSavedCard
+            );
+
         }
+
+
+        if (paymentMethod) {
+
+            paymentMethod.addEventListener(
+                "change",
+                updatePaymentFields
+            );
+
+            updatePaymentFields();
+
+        }
+
     </script>
+
 }

@@ -64,8 +64,15 @@ namespace CrustyCrab.Controllers
             if (customerId.HasValue)
             {
                 model.Addresses = await _api.GetCustomerAddresses(customerId.Value) ?? new List<ApiDeliveryAddress>();
-                model.PaymentMethods = await _api.GetPaymentMethods() ?? new List<ApiPaymentMethod>();
-                model.PaymentMethodId = model.PaymentMethods.FirstOrDefault()?.PaymentMethodID ?? 0;
+                model.PaymentMethods = await _api.GetPaymentMethods()
+      ?? new List<ApiPaymentMethod>();
+
+                model.SavedPaymentMethods = await _api.GetCustomerPaymentMethods(customerId.Value)
+                    ?? new List<ApiCustomerPaymentMethod>();
+
+                model.PaymentMethodId = model.SavedPaymentMethods.FirstOrDefault()?.PaymentMethodID
+                    ?? model.PaymentMethods.FirstOrDefault()?.PaymentMethodID
+                    ?? 0;
             }
 
             return View(model);
