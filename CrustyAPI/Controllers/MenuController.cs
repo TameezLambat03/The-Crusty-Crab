@@ -9,10 +9,14 @@ namespace CrustyAPI.Controllers;
 public class MenuController : ControllerBase
 {
     private readonly MenuService _menuService;
+    private readonly IWebHostEnvironment _environment;
 
-    public MenuController(MenuService menuService)
+    public MenuController(
+        MenuService menuService,
+        IWebHostEnvironment environment)
     {
         _menuService = menuService;
+        _environment = environment;
     }
 
     // GET: api/menu
@@ -37,6 +41,84 @@ public class MenuController : ControllerBase
         );
     }
 
+    // POST: api/menu/{id}/image
+    [HttpPost("{id}/image")]
+    public async Task<IActionResult> UploadImage(
+        int id,
+        IFormFile image)
+    {
+        if (image == null || image.Length == 0)
+        {
+            return BadRequest(new
+            {
+                message = "Please select an image file."
+            });
+        }
+
+        var menuItem = await _menuService.GetMenuItemById(id);
+
+        if (menuItem == null)
+        {
+            return NotFound(new
+            {
+                message = "Menu item not found."
+            });
+        }
+
+        var allowedExtensions = new[]
+        {
+            ".jpg",
+            ".jpeg",
+            ".png",
+            ".webp"
+        };
+
+        var extension = Path.GetExtension(image.FileName).ToLowerInvariant();
+
+        if (!allowedExtensions.Contains(extension))
+        {
+            return BadRequest(new
+            {
+                message = "Only JPG, JPEG, PNG and WEBP images are allowed."
+            });
+        }
+
+        const long maxFileSize = 5 * 1024 * 1024;
+
+        if (image.Length > maxFileSize)
+        {
+            return BadRequest(new
+            {
+                message = "The image must be 5 MB or smaller."
+            });
+        }
+
+        var imagesPath = Path.Combine(
+     _environment.ContentRootPath,
+     "Images",
+     "Menu");
+
+        Directory.CreateDirectory(imagesPath);
+
+        var fileName = $"{Guid.NewGuid():N}{extension}";
+        var filePath = Path.Combine(imagesPath, fileName);
+
+        await using (var stream = new FileStream(
+            filePath,
+            FileMode.Create))
+        {
+            await image.CopyToAsync(stream);
+        }
+
+        var imageUrl = $"/Images/Menu/{fileName}";
+
+        menuItem.ImageUrl = imageUrl;
+
+        await _menuService.UpdateMenuItem(id, menuItem);
+
+        return Ok(menuItem);
+    }
+
     // GET: api/menu/{id}
     [HttpGet("{id}")]
     public async Task<IActionResult> GetMenuItem(int id)
@@ -45,7 +127,10 @@ public class MenuController : ControllerBase
 
         if (menuItem == null)
         {
-            return NotFound(new { message = "Menu item not found" });
+            return NotFound(new
+            {
+                message = "Menu item not found"
+            });
         }
 
         return Ok(menuItem);
@@ -57,16 +142,21 @@ public class MenuController : ControllerBase
         int id,
         MenuItem menuItem)
     {
-        var updatedItem = await _menuService.UpdateMenuItem(id, menuItem);
+        var updatedItem =
+            await _menuService.UpdateMenuItem(id, menuItem);
 
         if (updatedItem == null)
         {
-            return NotFound(new { message = "Menu item not found" });
+            return NotFound(new
+            {
+                message = "Menu item not found"
+            });
         }
 
         return Ok(updatedItem);
     }
-    //DELETE
+
+    // DELETE: api/menu/{id}
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteMenuItem(int id)
     {
@@ -76,7 +166,8 @@ public class MenuController : ControllerBase
         {
             return Conflict(new
             {
-                message = "This menu item cannot be deleted because it is used in an existing cart or order. Mark it as unavailable instead."
+                message =
+                    "This menu item cannot be deleted because it is used in an existing cart or order. Mark it as unavailable instead."
             });
         }
 
