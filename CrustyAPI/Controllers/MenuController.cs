@@ -28,7 +28,7 @@ public class MenuController : ControllerBase
         return Ok(menu);
     }
 
-    // POST: api/menu
+    // POST: api menu
     [HttpPost]
     public async Task<IActionResult> CreateMenuItem(MenuItem menuItem)
     {
