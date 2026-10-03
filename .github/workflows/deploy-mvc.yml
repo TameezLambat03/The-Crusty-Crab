@@ -3,7 +3,7 @@ name: Deploy CrustyCrab MVC to Azure
 on:
   push:
     branches:
-      - main
+      - MVC-front-end
   workflow_dispatch:
 
 env:
@@ -32,7 +32,7 @@ jobs:
       - name: Publish
         run: dotnet publish CrustyCrab.csproj --configuration Release --no-restore --output ./publish
 
-      - name: Deploy to Azure
+      - name: Deploy to Azures
         uses: azure/webapps-deploy@v3
         with:
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
