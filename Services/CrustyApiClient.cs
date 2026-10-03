@@ -1,5 +1,8 @@
 using System.Net.Http.Json;
 using CrustyCrab.Models;
+using Microsoft.AspNetCore.Http;
+
+
 
 namespace CrustyCrab.Services
 {
@@ -32,7 +35,49 @@ namespace CrustyCrab.Services
         public Task<ApiMenuItem?> CreateMenuItem(ApiMenuItem item) => Post<ApiMenuItem>("api/menu", item);
 
         public Task<ApiMenuItem?> UpdateMenuItem(ApiMenuItem item) => Put<ApiMenuItem>($"api/menu/{item.MenuItemID}", item);
+        public async Task<ApiMenuItem?> UploadMenuImage(
+    int menuItemId,
+    IFormFile image)
+        {
+            try
+            {
+                using var content = new MultipartFormDataContent();
 
+                await using var stream = image.OpenReadStream();
+
+                using var fileContent = new StreamContent(stream);
+
+                fileContent.Headers.ContentType =
+                    new System.Net.Http.Headers.MediaTypeHeaderValue(
+                        image.ContentType);
+
+                content.Add(
+                    fileContent,
+                    "image",
+                    image.FileName);
+
+                var response = await _http.PostAsync(
+                    $"api/menu/{menuItemId}/image",
+                    content);
+
+                return await ReadResponse<ApiMenuItem>(
+                    response,
+                    $"api/menu/{menuItemId}/image",
+                    "POST");
+            }
+            catch (Exception ex) when (
+                ex is HttpRequestException or
+                TaskCanceledException or
+                System.Text.Json.JsonException)
+            {
+                _logger.LogWarning(
+                    ex,
+                    "POST api/menu/{Id}/image failed",
+                    menuItemId);
+
+                return null;
+            }
+        }
         public async Task<(bool Success, string? ErrorMessage)> DeleteMenuItem(int id)
         {
             try

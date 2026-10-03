@@ -41,6 +41,7 @@ namespace CrustyCrab.Controllers
             return View(items);
         }
 
+        
         public async Task<IActionResult> Customise(int id)
         {
             var apiItem = await _api.GetMenuItem(id);
@@ -58,13 +59,40 @@ namespace CrustyCrab.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateForm(ApiMenuItem item)
+        public async Task<IActionResult> CreateForm(
+     ApiMenuItem item,
+     IFormFile? image)
         {
             if (!IsAdmin())
                 return RedirectToAction("Login", "Auth");
 
+            // Create the menu item first
             var created = await _api.CreateMenuItem(item);
-            TempData[created == null ? "Error" : "Success"] = created == null ? "The menu item could not be created." : "Menu item created.";
+
+            if (created == null)
+            {
+                TempData["Error"] = "The menu item could not be created.";
+                return RedirectToAction("Portal", "Manager");
+            }
+
+            // Upload the image using the newly created MenuItemID
+            if (image != null && image.Length > 0)
+            {
+                var uploaded = await _api.UploadMenuImage(
+                    created.MenuItemID,
+                    image);
+
+                if (uploaded == null)
+                {
+                    TempData["Error"] =
+                        "Menu item was created, but the image could not be uploaded.";
+
+                    return RedirectToAction("Portal", "Manager");
+                }
+            }
+
+            TempData["Success"] = "Menu item created successfully.";
+
             return RedirectToAction("Portal", "Manager");
         }
 

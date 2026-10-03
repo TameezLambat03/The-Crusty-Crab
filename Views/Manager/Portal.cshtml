@@ -4,15 +4,14 @@
     ViewData["Title"] = "Manager Portal";
 }
 
-
-
-
 <!-- PAGE HEADER -->
 <div class="page-head">
     <div class="page-head-inner">
         <div>
             <span class="eyebrow">Restaurant Administration</span>
+
             <h1>Manager Portal</h1>
+
             <p class="muted">
                 Manage the menu, stock availability and restaurant operations.
             </p>
@@ -26,6 +25,7 @@
 
 
 <!-- MESSAGES -->
+
 @if (ViewData["ApiError"] is string portalError)
 {
     <div class="page-head">
@@ -54,294 +54,125 @@
 }
 
 
-<!-- ANALYTICS -->
+<!-- PORTAL -->
+
 <div class="portal-wrap">
+
+    <!-- ANALYTICS -->
 
     <div class="portal-grid">
 
         <div class="portal-card">
-            <span class="eyebrow">US-09</span>
-            <h3>Sales Analytics</h3>
+
+            <span class="eyebrow">
+                US-09
+            </span>
+
+            <h3>
+                Sales Analytics
+            </h3>
 
             <div class="stat-row">
+
                 <div class="stat rev">
-                    <small>Today's Revenue</small>
+
+                    <small>
+                        Today's Revenue
+                    </small>
+
                     <strong>
                         R @Model.TodaysRevenue.ToString(
-                                                    "N2",
-                                                    System.Globalization.CultureInfo.InvariantCulture)
+                            "N2",
+                            System.Globalization.CultureInfo.InvariantCulture)
                     </strong>
+
                 </div>
 
                 <div class="stat">
-                    <small>Peak Order Time</small>
-                    <strong>@Model.PeakOrderTime</strong>
+
+                    <small>
+                        Peak Order Time
+                    </small>
+
+                    <strong>
+                        @Model.PeakOrderTime
+                    </strong>
+
                 </div>
+
             </div>
+
         </div>
 
 
         <div class="portal-card">
-            <span class="eyebrow">Operations</span>
-            <h3>Staff Shift Planning</h3>
+
+            <span class="eyebrow">
+                Operations
+            </span>
+
+            <h3>
+                Staff Shift Planning
+            </h3>
 
             <div class="staff-box">
-                <h5>Recommendation</h5>
-                <p>@Model.StaffRecommendation</p>
-            </div>
-        </div>
 
-    </div>
+                <h5>
+                    Recommendation
+                </h5>
 
-
-    <!-- MENU MANAGEMENT -->
-    <div style="margin-top:40px;">
-
-        <div class="page-head-inner" style="padding:0 0 24px 0;">
-            <div>
-                <span class="eyebrow">US-08</span>
-                <h2>Menu Management</h2>
-                <p class="muted">
-                    Manage menu items and their availability.
+                <p>
+                    @Model.StaffRecommendation
                 </p>
+
             </div>
-
-            <a href="#add-menu-item" class="btn-blue">
-                + Add Menu Item
-            </a>
-        </div>
-
-
-        <!-- MENU GRID -->
-        <div class="menu-grid">
-
-            @foreach (var item in Model.MenuItems)
-            {
-                <div class="menu-card">
-
-                    <!-- IMAGE -->
-                    @if (!string.IsNullOrEmpty(item.ImageUrl))
-                    {
-                        <img src="@item.ImageUrl" alt="@item.ItemName" />
-                    }
-                    else
-                    {
-                        <div class="menu-image-placeholder">
-                            No Image
-                        </div>
-                    }
-
-
-                    <!-- ITEM DETAILS -->
-                    <div style="padding:18px 0 0 0;">
-
-                        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;">
-
-                            <div>
-                                <span class="eyebrow">
-                                    @item.Category
-                                </span>
-
-                                <h3>@item.ItemName</h3>
-                            </div>
-
-                            @if (item.Availability)
-                            {
-                                <span class="location-chip">
-                                    In Stock
-                                </span>
-                            }
-                            else
-                            {
-                                <span class="location-chip" style="opacity:.6;">
-                                    Out of Stock
-                                </span>
-                            }
-
-                        </div>
-
-
-                        <p>
-                            @item.Description
-                        </p>
-
-
-                        <div class="price">
-                            R @item.Price.ToString("0.00")
-                        </div>
-
-
-                        <!-- STOCK -->
-                        <form asp-controller="Manager"
-                              asp-action="ToggleStock"
-                              method="post"
-                              style="margin-top:16px;">
-
-                            <input type="hidden"
-                                   name="id"
-                                   value="@item.MenuItemID" />
-
-                            <button type="submit"
-                                    class="stock-btn @(item.Availability ? "" : "out")"
-                                    style="width:100%;">
-
-                                @(item.Availability
-                                    ? "✓ In Stock — Toggle"
-                                    : "✕ Out of Stock — Toggle")
-
-                            </button>
-
-                        </form>
-
-
-                        <!-- EDIT / DELETE -->
-                        <div style="display:flex;gap:10px;margin-top:10px;">
-
-                            <a asp-controller="Menu"
-                               asp-action="Edit"
-                               asp-route-id="@item.MenuItemID"
-                               class="btn-blue"
-                               style="flex:1;text-align:center;">
-
-                                Edit
-                            </a>
-
-                            <form asp-controller="Menu"
-                                  asp-action="DeleteForm"
-                                  method="post"
-                                  style="flex:1;margin:0;">
-
-                                <input type="hidden"
-                                       name="id"
-                                       value="@item.MenuItemID" />
-
-                                <button type="submit"
-                                        class="stock-btn out"
-                                        style="width:100%;">
-
-                                    Delete
-
-                                </button>
-
-                            </form>
-
-                        </div>
-
-                    </div>
-
-                </div>
-            }
-
-
-            @if (!Model.MenuItems.Any())
-            {
-                <div class="empty-note">
-                    No menu items are currently available.
-                </div>
-            }
 
         </div>
 
     </div>
 
+    <!-- MENU ADMINISTRATION -->
 
-    <!-- ADD MENU ITEM -->
-    <div id="add-menu-item"
-         class="portal-card"
-         style="margin-top:40px;">
+<div class="portal-card"
+     style="margin-top:40px;">
 
-        <div style="margin-bottom:24px;">
-            <span class="eyebrow">Menu Administration</span>
-            <h2>Add Menu Item</h2>
-            <p class="muted">
-                Add a new item to the customer menu.
-            </p>
-        </div>
+    <div style="margin-bottom:24px;">
 
+        <span class="eyebrow">
+            Menu Administration
+        </span>
 
-        <form asp-controller="Menu"
-              asp-action="CreateForm"
-              method="post">
+        <h2>
+            Menu Management
+        </h2>
 
-            <div class="field-row">
-
-                <div class="field">
-                    <label>Item Name</label>
-                    <input name="ItemName"
-                           placeholder="e.g. Krabby Patty"
-                           required />
-                </div>
-
-                <div class="field">
-                    <label>Category</label>
-                    <input name="Category"
-                           placeholder="e.g. Burgers"
-                           required />
-                </div>
-
-            </div>
-
-
-            <div class="field-row">
-
-                <div class="field">
-                    <label>Price</label>
-
-                    <input name="Price"
-                           type="number"
-                           step="0.01"
-                           min="0"
-                           placeholder="0.00"
-                           required />
-                </div>
-
-                <div class="field">
-                    <label>Image URL</label>
-
-                    <input name="ImageUrl"
-                           placeholder="/Images/krabby-patty.jpg" />
-                </div>
-
-            </div>
-
-
-            <div class="field">
-
-                <label>Description</label>
-
-                <textarea name="Description"
-                          placeholder="Describe the menu item..."></textarea>
-
-            </div>
-
-
-            <label class="addon"
-                   style="margin-bottom:18px;">
-
-                <span>
-                    <strong>Available</strong>
-                    <small>
-                        Show this item as in stock on the customer menu.
-                    </small>
-                </span>
-
-                <input type="checkbox"
-                       name="Availability"
-                       value="true"
-                       checked />
-
-            </label>
-
-
-            <button class="btn-blue"
-                    type="submit">
-
-                Create Menu Item
-
-            </button>
-
-        </form>
+        <p class="muted">
+            Add, edit, delete and manage availability of menu items.
+        </p>
 
     </div>
 
+    <div style="display:flex;
+                gap:12px;
+                flex-wrap:wrap;">
+
+        <a asp-controller="Manager"
+           asp-action="MenuManagement"
+           class="btn-blue">
+
+            Manage Menu
+
+        </a>
+
+        <a asp-controller="Manager"
+           asp-action="AddMenuItem"
+           class="btn-blue">
+
+            + Add Menu Item
+
+        </a>
+
+    </div>
+
+</div>
 </div>

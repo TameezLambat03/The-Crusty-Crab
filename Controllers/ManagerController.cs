@@ -80,6 +80,46 @@ namespace CrustyCrab.Controllers
 
             return View(model);
         }
+        [HttpGet]
+        public async Task<IActionResult> MenuManagement()
+        {
+            if (!HttpContext.Session.GetInt32("UserId").HasValue ||
+                !string.Equals(
+                    HttpContext.Session.GetString("Role"),
+                    "Admin",
+                    StringComparison.OrdinalIgnoreCase))
+            {
+                return RedirectToAction(nameof(Login));
+            }
+
+            var menu = await _api.GetMenu();
+
+            var items = (menu ?? new List<ApiMenuItem>())
+                .Select(item =>
+                {
+                    item.ImageUrl = _api.ResolveApiUrl(item.ImageUrl);
+                    return item;
+                })
+                .ToList();
+
+            return View(items);
+        }
+
+        [HttpGet]
+        public IActionResult AddMenuItem()
+        {
+            if (!HttpContext.Session.GetInt32("UserId").HasValue ||
+                !string.Equals(
+                    HttpContext.Session.GetString("Role"),
+                    "Admin",
+                    StringComparison.OrdinalIgnoreCase))
+            {
+                return RedirectToAction(nameof(Login));
+            }
+
+            return View();
+        }
+
 
         [HttpPost]
         public async Task<IActionResult> ToggleStock(int id)
