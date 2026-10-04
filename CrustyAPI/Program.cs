@@ -34,10 +34,13 @@ namespace CrustyAPI
             builder.Services.AddScoped<AdminStaffService>();
             builder.Services.AddScoped<CrabbyBotService>();
             var app = builder.Build();
+            var imagesPath = Path.Combine(app.Environment.ContentRootPath, "Images");
+
+            Directory.CreateDirectory(imagesPath);
+
             app.UseStaticFiles(new StaticFileOptions
             {
-                FileProvider = new PhysicalFileProvider(
-        Path.Combine(app.Environment.ContentRootPath, "Images")),
+                FileProvider = new PhysicalFileProvider(imagesPath),
                 RequestPath = "/Images"
             });
 
