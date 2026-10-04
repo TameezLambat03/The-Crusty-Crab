@@ -1,24 +1,37 @@
-<<<<<<< HEAD
-# Visual Studio
-.vs/
-bin/
-obj/
+# Android Studio / IntelliJ
+.idea/
+*.iml
 
-# Publish profiles
-**/Properties/PublishProfiles/
-# cs proj
-*.csproj.user
+# Gradle
+.gradle/
+build/
+**/build/
+
+# Local SDK configuration
+local.properties
+
+# Android Studio generated files
+.externalNativeBuild/
+.cxx/
+
+# APKs / build outputs
+*.apk
+*.aab
+
+# Keystore / signing files
+*.jks
+*.keystore
+
+# OS files
+.DS_Store
+Thumbs.db
+
 # Temporary files
-*.tmp
-# Local configuration
-**/appsettings.json
-=======
-@"
+*.log
+# .NET / Visual Studio
 .vs/
 bin/
 obj/
 *.user
-*.suo
-"@ | Set-Content .gitignore
-appsettings.Development.json
->>>>>>> MVC-front-end
+*.tmp
+CrustyAPI/appsettings.json
