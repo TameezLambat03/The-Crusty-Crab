@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Visual Studio
 .vs/
 bin/
@@ -11,3 +12,13 @@ obj/
 *.tmp
 # Local configuration
 **/appsettings.json
+=======
+@"
+.vs/
+bin/
+obj/
+*.user
+*.suo
+"@ | Set-Content .gitignore
+appsettings.Development.json
+>>>>>>> MVC-front-end

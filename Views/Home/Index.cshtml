@@ -1,0 +1,93 @@
+﻿@{
+    ViewData["Title"] = "Overview";
+}
+
+<section class="hero">
+
+    <div>
+        <span class="hero-chip">
+            Fresh Cajun Seafood &bull; Montgomery Park
+        </span>
+
+        <h1>
+            Authentic Cajun Seafood Boils,<br />
+            <span class="grad">The Best in Johannesburg.</span>
+        </h1>
+
+        <p>
+            Explore our menu, customise your order, and enjoy fresh Cajun
+            seafood prepared with bold flavours at The Crusty Crab.
+        </p>
+
+        <div class="hero-actions">
+
+            <a asp-controller="Menu"
+               asp-action="Index"
+               class="btn-blue btn-launch">
+                Order Now &rarr;
+            </a>
+
+        </div>
+    </div>
+
+    <div class="hub">
+
+        <div class="hub-head">
+            <span class="eyebrow">
+                Explore The Crusty Crab
+            </span>
+
+            <span class="hub-tag mono">
+                Fresh &bull; Bold &bull; Cajun
+            </span>
+        </div>
+
+        <div class="hub-grid">
+
+            <a asp-controller="Menu"
+               asp-action="Index"
+               class="hub-item">
+                1. Browse Menu
+                <span>&rsaquo;</span>
+            </a>
+
+            <a asp-controller="Menu"
+               asp-action="Customise"
+               asp-route-id="1"
+               class="hub-item">
+                2. Customise Your Order
+                <span>&rsaquo;</span>
+            </a>
+
+            <a asp-controller="Cart"
+               asp-action="Index"
+               class="hub-item">
+                3. Your Cart
+                <span>&rsaquo;</span>
+            </a>
+
+            <a asp-controller="Checkout"
+               asp-action="Index"
+               class="hub-item">
+                4. Checkout &amp; Pay
+                <span>&rsaquo;</span>
+            </a>
+
+            <a asp-controller="Kitchen"
+               asp-action="Tracker"
+               class="hub-item">
+                5. Track Your Order
+                <span>&rsaquo;</span>
+            </a>
+
+            <a asp-controller="Menu"
+               asp-action="Review"
+               class="hub-item">
+                6. Leave Feedback
+                <span>&rsaquo;</span>
+            </a>
+
+        </div>
+    </div>
+
+</section>
