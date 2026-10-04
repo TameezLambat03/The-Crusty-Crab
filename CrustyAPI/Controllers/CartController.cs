@@ -29,7 +29,7 @@ public class CartController : ControllerBase
         return Ok(cart);
     }
 
-    // GET: api/cart/1
+    // GET: api/cart
     [HttpGet("{id}")]
     public async Task<IActionResult> GetCart(int id)
     {
