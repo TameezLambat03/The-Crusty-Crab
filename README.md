@@ -138,10 +138,13 @@ The web application provides the primary customer ordering interface and restaur
 
 https://crusty-crab-api-tameez-hjechmamdneee7c6.southafricanorth-01.azurewebsites.net/
 
-The API provides the backend services used by the web and Android applications.
+The **CrustyAPI** is the backend REST API used by the web and Android applications. The root API URL does not display a traditional webpage because the application is designed to provide data through API endpoints.
 
-The MVC application and Android application communicate with the deployed CrustyAPI.
+For example, the **Menu endpoint** can be accessed here:
 
+https://crusty-crab-api-tameez-hjechmamdneee7c6.southafricanorth-01.azurewebsites.net/api/menu
+
+The MVC application and Android application communicate with the deployed CrustyAPI through these endpoints.
 ---
 
 # 🎥 Demonstration Videos
