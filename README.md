@@ -159,7 +159,9 @@ The following videos demonstrate the functionality and features of the Crusty Cr
 
 [YouTube Video – Android Application Demo] https://youtu.be/sIX8pzTgMb4?si=n1m2C49IucuvWmpa
 
+## 📑 Project Presentation
 
+[Download the Crusty Crab PowerPoint](Documentation/CrustyCrab-Presentation.pptx)
 ---
 
 # 📁 Project Structure
