@@ -161,7 +161,7 @@ The following videos demonstrate the functionality and features of the Crusty Cr
 
 ## 📑 Project Presentation
 
-[Download the Crusty Crab PowerPoint](Documentation/CrustyCrab-Presentation.pptx)
+[View the Crusty Crab Project Presentation](Documentation/Crusty Crab Implementation and Functionality.pdf)
 ---
 
 # 📁 Project Structure
