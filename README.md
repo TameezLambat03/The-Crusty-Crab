@@ -161,9 +161,9 @@ The following videos demonstrate the functionality and features of the Crusty Cr
 
 ## 📑 Project Presentation
 
-[View the Crusty Crab Project Presentation](Documentation/Crusty Crab Implementation and Functionality.pdf)
----
+[View the Crusty Crab Project Presentation](Documentation/Crusty%20Crab%20Implementation%20and%20Functionality.pdf)
 
+---
 # 📁 Project Structure
 
 The `main` branch contains the integrated project:
