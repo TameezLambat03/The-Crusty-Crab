@@ -15,4 +15,5 @@ public class MenuItem
     public bool Availability { get; set; }
 
     public string? ImageUrl { get; set; }
+    public bool IsPopular { get; set; } = false;
 }

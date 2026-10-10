@@ -34,6 +34,14 @@ public class MenuService
         return menuItem;
     }
 
+    public async Task<List<MenuItem>> GetPopularMenuItems()
+    {
+        return await _context.MenuItems
+            .Where(m => m.IsPopular && m.Availability)
+            .ToListAsync();
+    }
+
+
     public async Task<MenuItem?> UpdateMenuItem(int id, MenuItem menuItem)
     {
         var existingItem = await _context.MenuItems
@@ -50,6 +58,7 @@ public class MenuService
         existingItem.Category = menuItem.Category;
         existingItem.Availability = menuItem.Availability;
         existingItem.ImageUrl = menuItem.ImageUrl;
+        existingItem.IsPopular = menuItem.IsPopular;
 
         await _context.SaveChangesAsync();
 
