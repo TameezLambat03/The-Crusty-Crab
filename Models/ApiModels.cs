@@ -9,6 +9,7 @@ namespace CrustyCrab.Models
         public string Category { get; set; } = string.Empty;
         public bool Availability { get; set; }
         public string? ImageUrl { get; set; }
+        public bool IsPopular { get; set; } = false;
     }
 
     public class ApiOrderItem

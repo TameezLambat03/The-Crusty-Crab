@@ -28,13 +28,22 @@ namespace CrustyCrab.Services
             return new Uri(_http.BaseAddress!, url.TrimStart('/')).ToString();
         }
 
-        public Task<List<ApiMenuItem>?> GetMenu() => Get<List<ApiMenuItem>>("api/menu");
 
-        public Task<ApiMenuItem?> GetMenuItem(int id) => Get<ApiMenuItem>($"api/menu/{id}");
+        public Task<List<ApiMenuItem>?> GetMenu()
+            => Get<List<ApiMenuItem>>("api/menu");
 
-        public Task<ApiMenuItem?> CreateMenuItem(ApiMenuItem item) => Post<ApiMenuItem>("api/menu", item);
+        public Task<List<ApiMenuItem>?> GetPopularMenuItems()
+            => Get<List<ApiMenuItem>>("api/menu/popular");
 
-        public Task<ApiMenuItem?> UpdateMenuItem(ApiMenuItem item) => Put<ApiMenuItem>($"api/menu/{item.MenuItemID}", item);
+        public Task<ApiMenuItem?> GetMenuItem(int id)
+            => Get<ApiMenuItem>($"api/menu/{id}");
+
+        public Task<ApiMenuItem?> CreateMenuItem(ApiMenuItem item)
+            => Post<ApiMenuItem>("api/menu", item);
+
+        public Task<ApiMenuItem?> UpdateMenuItem(ApiMenuItem item)
+            => Put<ApiMenuItem>($"api/menu/{item.MenuItemID}", item);
+
         public async Task<ApiMenuItem?> UploadMenuImage(
     int menuItemId,
     IFormFile image)
