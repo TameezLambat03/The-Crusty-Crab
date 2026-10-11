@@ -183,6 +183,29 @@ namespace CrustyCrab.Services
 
         public Task<List<ApiDeliveryAddress>?> GetAddresses() => Get<List<ApiDeliveryAddress>>("api/deliveryaddress");
 
+        public async Task<List<AddressSuggestion>?> SearchAddressSuggestions(string query)
+        {
+            try
+            {
+                var url = $"api/AddressAutocomplete?q={Uri.EscapeDataString(query)}";
+                var response = await _http.GetAsync(url);
+
+                return await ReadResponse<List<AddressSuggestion>>(
+                    response,
+                    url,
+                    "GET");
+            }
+            catch (Exception ex) when (
+                ex is HttpRequestException or
+                TaskCanceledException or
+                System.Text.Json.JsonException)
+            {
+                _logger.LogWarning(ex, "Address autocomplete search failed");
+                return null;
+            }
+        }
+
+
         public Task<ApiDeliveryAddress?> GetAddress(int id) => Get<ApiDeliveryAddress>($"api/deliveryaddress/{id}");
 
         public Task<List<ApiDeliveryAddress>?> GetCustomerAddresses(int customerId) => Get<List<ApiDeliveryAddress>>($"api/deliveryaddress/customer/{customerId}");
@@ -199,7 +222,34 @@ namespace CrustyCrab.Services
             return Put<ApiDeliveryAddress>($"api/deliveryaddress/{id}", body);
         }
 
-        public Task<bool> DeleteAddress(int id) => Delete($"api/deliveryaddress/{id}");
+
+        public async Task<(bool Success, string? ErrorMessage)> DeleteAddress(int id)
+        {
+            try
+            {
+                var response = await _http.DeleteAsync($"api/deliveryaddress/{id}");
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return (true, null);
+                }
+
+                var error = await response.Content.ReadFromJsonAsync<ApiErrorResponse>();
+
+                return (false, error?.Message ??
+                    "The delivery address could not be deleted.");
+            }
+            catch (Exception ex) when (
+                ex is HttpRequestException or
+                TaskCanceledException or
+                System.Text.Json.JsonException)
+            {
+                _logger.LogWarning(ex, "DELETE api/deliveryaddress/{Id} failed", id);
+
+                return (false, "The API could not be reached. Please try again.");
+            }
+        }
+
 
         public Task<List<ApiPaymentMethod>?> GetPaymentMethods() => Get<List<ApiPaymentMethod>>("api/payment/methods");
 
