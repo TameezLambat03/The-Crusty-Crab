@@ -85,19 +85,41 @@ public class DeliveryAddressController : ControllerBase
         return Ok(address);
     }
 
+
+
+
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteAddress(int id)
     {
-        var deleted = await _addressService.DeleteAddress(id);
-
-        if (!deleted)
+        try
         {
-            return NotFound(new
+            var deleted = await _addressService.DeleteAddress(id);
+
+            if (!deleted)
             {
-                message = "Delivery address not found"
+                return NotFound(new
+                {
+                    message = "Delivery address not found"
+                });
+            }
+
+            return NoContent();
+        }
+        catch (Microsoft.EntityFrameworkCore.DbUpdateException ex)
+            when (ex.InnerException is MySqlConnector.MySqlException mysqlEx
+                  && mysqlEx.Number == 1451)
+        {
+            return Conflict(new
+            {
+                message = "This address cannot be deleted because it is associated with an existing order."
             });
         }
-
-        return NoContent();
+        catch (MySqlConnector.MySqlException ex) when (ex.Number == 1451)
+        {
+            return Conflict(new
+            {
+                message = "This address cannot be deleted because it is associated with an existing order."
+            });
+        }
     }
 }
