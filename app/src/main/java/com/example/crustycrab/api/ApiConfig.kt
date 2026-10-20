@@ -6,8 +6,7 @@ object ApiConfig {
      *
      * The trailing slash is REQUIRED by Retrofit.
      */
-    const val BASE_URL =
-        "https://crusty-crab-api-tameez-hjechmamdneee7c6.southafricanorth-01.azurewebsites.net/"
+    const val BASE_URL = "http://10.0.2.2:5083/"
 
     const val TIMEOUT_SECONDS = 30L
 }
