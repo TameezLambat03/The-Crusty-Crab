@@ -1,17 +1,20 @@
-name: Deploy CrustyCrab MVC to Azure
+
+name: Build CrustyCrab MVC
 
 on:
   push:
     branches:
       - MVC-front-end
+  pull_request:
+    branches:
+      - MVC-front-end
   workflow_dispatch:
 
 env:
-  AZURE_WEBAPP_NAME: CrustyCrab
   DOTNET_VERSION: '10.0.x'
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
 
     steps:
@@ -28,13 +31,3 @@ jobs:
 
       - name: Build
         run: dotnet build CrustyCrab.csproj --configuration Release --no-restore
-
-      - name: Publish
-        run: dotnet publish CrustyCrab.csproj --configuration Release --no-restore --output ./publish
-
-      - name: Deploy to Azures
-        uses: azure/webapps-deploy@v3
-        with:
-          app-name: ${{ env.AZURE_WEBAPP_NAME }}
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_MVC }}
-          package: ./publish
