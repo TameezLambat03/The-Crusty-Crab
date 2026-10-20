@@ -30,7 +30,7 @@ public class AppDbContext : DbContext
 
     public DbSet<Payment> Payments { get; set; }
     public DbSet<CustomerPaymentMethod> CustomerPaymentMethods { get; set; }
-
+    public DbSet<CustomerReview> CustomerReviews { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -182,6 +182,29 @@ public class AppDbContext : DbContext
                 .WithMany()
                 .HasForeignKey(e => e.PaymentMethodID)
                 .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<CustomerReview>(entity =>
+            {
+                entity.ToTable("Customer_Review");
+
+                entity.HasKey(r => r.ReviewID);
+
+                entity.Property(r => r.Comment)
+                    .HasColumnType("text")
+                    .IsRequired();
+
+                entity.Property(r => r.AdminResponse)
+                    .HasColumnType("text");
+
+                entity.HasOne<Customer>()
+                    .WithMany()
+                    .HasForeignKey(r => r.CustomerID)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne<AdminUser>()
+                    .WithMany()
+                    .HasForeignKey(r => r.AdminID)
+                    .OnDelete(DeleteBehavior.SetNull);
+            });
         });
     }
 
