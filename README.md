@@ -2,18 +2,21 @@
 
 ### Restaurant Ordering & Management System
 
-The Crusty Crab is a full-stack restaurant ordering platform developed as a collaborative software project. The system provides customers with an online menu, cart and checkout functionality, while allowing restaurant staff and administrators to manage menu items, orders, payments and staff.
+The **Crusty Crab** is a full-stack restaurant ordering and management system developed as a collaborative software project.
 
-The project consists of multiple applications working together through a central REST API.
+The system provides customers with web and mobile ordering experiences while giving restaurant staff and administrators tools to manage menu items, orders, payments and staff.
+
+The project consists of three main components working together through a central REST API:
+
+- 🌐 ASP.NET Core MVC Web Application
+- 📱 Kotlin Android Application
+- ⚙️ ASP.NET Core REST API
 
 ---
 
 ## 📋 Project Overview
 
-**Deployed URL:**  
-https://crustycrab-aze3fccnc6gvfchd.southafricanorth-01.azurewebsites.net
-
-The Crusty Crab system is designed to simulate a modern restaurant ordering platform supporting both customers and restaurant management.
+The Crusty Crab simulates a modern restaurant ordering platform supporting both customers and restaurant management.
 
 ### Customer Features
 
@@ -24,11 +27,14 @@ The Crusty Crab system is designed to simulate a modern restaurant ordering plat
 - Select spice levels and add-ons
 - Choose collection or delivery
 - Manage delivery addresses
+- Automatically suggest addresses using **Geoapify address autocomplete**
 - Manage saved payment methods
 - Place orders
 - View order information
-- Receive order/payment confirmation
+- Track order status
+- Receive order and payment confirmation
 - Interact with **CrabbyBot** for restaurant FAQs
+- Submit and manage customer reviews
 
 ### Staff & Administration
 
@@ -42,56 +48,52 @@ The Crusty Crab system is designed to simulate a modern restaurant ordering plat
 - View and update orders
 - Manage payment methods
 - Update payment status
+- Manage customer reviews
 
 ---
 
-# 🏗️ System Architecture
+## 🏗️ System Architecture
 
-The project uses a multi-application architecture:
+The project uses a multi-application architecture, with **CrustyAPI** acting as the central backend.
 
 ```text
-                         ┌─────────────────────┐
-                         │     Customer        │
-                         │      Browser        │
-                         └──────────┬──────────┘
+                       ┌─────────────────────────┐
+                       │        Customers        │
+                       └────────────┬────────────┘
                                     │
-                                    ▼
-                         ┌─────────────────────┐
-                         │   ASP.NET MVC Web   │
-                         │      Frontend       │
-                         └──────────┬──────────┘
-                                    │
-                                    │ REST API
-                                    ▼
-                         ┌─────────────────────┐
-                         │    CrustyAPI        │
-                         │   ASP.NET Web API   │
-                         └──────────┬──────────┘
-                                    │
-                                    ▼
-                         ┌─────────────────────┐
-                         │     MySQL Database  │
-                         │   crusty_crab_db    │
-                         └─────────────────────┘
+                       ┌────────────┴────────────┐
+                       │                         │
+                       ▼                         ▼
+             ┌──────────────────┐      ┌──────────────────┐
+             │ ASP.NET Core MVC │      │  Android App     │
+             │   Web Application│      │   Kotlin / XML   │
+             └────────┬─────────┘      └────────┬─────────┘
+                      │                         │
+                      └────────────┬────────────┘
+                                   │
+                                   ▼
+                       ┌─────────────────────┐
+                       │     CrustyAPI       │
+                       │ ASP.NET Core Web API│
+                       └──────────┬──────────┘
+                                  │
+                                  ▼
+                       ┌─────────────────────┐
+                       │    MySQL Database   │
+                       │   crusty_crab_db    │
+                       └─────────────────────┘
 
-
-             ┌──────────────────────────────┐
-             │       Android Application    │
-             │        Kotlin / XML          │
-             └──────────────┬───────────────┘
-                            │
-                            │ REST API
-                            ▼
-                     ┌───────────────┐
-                     │  CrustyAPI    │
-                     └───────────────┘
+                External Integration:
+                Geoapify Address Autocomplete
 ```
+
+Geoapify is used to provide address suggestions as users enter delivery addresses. The applications communicate with the central API for the system's core restaurant functionality.
 
 ---
 
-# 💻 Technologies
+## 💻 Technologies
 
-## Web Frontend
+### Web Application
 
 - ASP.NET Core MVC
 - .NET 10
@@ -99,69 +101,60 @@ The project uses a multi-application architecture:
 - HTML
 - CSS
 - JavaScript
-- Bootstrap/custom styling where applicable
+- Bootstrap and custom styling
 
-## Backend
+### REST API
 
 - ASP.NET Core Web API
 - .NET 10
 - Entity Framework Core
 - MySQL
 - BCrypt password hashing
+- RESTful endpoints
 
-## Mobile
+### Android Application
 
 - Android Studio
 - Kotlin
 - XML layouts
+- Gradle
+- Android testing
 
-## Deployment
+### External Services & Infrastructure
 
+- **Geoapify** — address autocomplete and address suggestions
 - Microsoft Azure
 - Azure App Service
-- Azure Database for MySQL
+- MySQL
+- GitHub
 - GitHub Actions
+- HTTPS
 
 ---
 
-# 🌐 Deployed Services
+## 📁 Project Structure
 
-The project uses Azure-hosted services for its deployed environment.
-
-### CrustyAPI
+The `main` branch contains the integrated Crusty Crab project.
 
 ```text
-https://crusty-crab-api-tameez-hjechmamdneee7c6.southafricanorth-01.azurewebsites.net/
-```
-
-### MVC Web Application
-
-The MVC application is deployed separately through Azure App Service.
-
-> The MVC application communicates with the deployed CrustyAPI rather than a local development server.
-
----
-
-# 📁 Project Structure
-
-The MVC application follows the standard ASP.NET Core MVC structure:
-
-```text
-CrustyCrab/
+TheCrustyCrab/
+│
+├── CrustyAPI/
+│   ├── Controllers/
+│   ├── DTOs/
+│   ├── Data/
+│   ├── Models/
+│   ├── Services/
+│   └── CrustyAPI.csproj
+│
+├── CrustyAPI.Tests/
+│   └── API automated tests
 │
 ├── Controllers/
-│   ├── AuthController.cs
-│   ├── CartController.cs
-│   ├── CheckoutController.cs
-│   ├── CustomerController.cs
-│   ├── ManagerController.cs
-│   ├── MenuController.cs
-│   └── ...
+│   └── MVC controllers
 │
 ├── Models/
-│   ├── ApiModels.cs
-│   ├── CheckoutViewModel.cs
-│   └── ...
+│   └── MVC models and API models
 │
 ├── Services/
 │   └── CrustyApiClient.cs
@@ -173,6 +166,7 @@ CrustyCrab/
 │   ├── Customer/
 │   ├── Manager/
 │   ├── Menu/
+│   ├── Review/
 │   └── Shared/
 │
 ├── wwwroot/
@@ -180,106 +174,119 @@ CrustyCrab/
 │   ├── js/
 │   └── images/
 │
-├── .github/
-│   └── workflows/
-│       └── deploy-mvc.yml
+├── app/
+│   └── Android application source
 │
-├── appsettings.json
+├── gradle/
+│
+├── Documentation/
+│   └── Project presentation
+│
+├── .github/
+│   └── Workflows, where configured
+│
+├── CrustyCrab.csproj
+├── CrustyCrab.slnx
+├── TheCrustyCrab.slnx
 ├── Program.cs
-└── CrustyCrab.csproj
+└── README.md
 ```
 
 ---
 
-# 🔌 API Integration
+## 🔌 API Integration
 
-The MVC application communicates with the CrustyAPI through `CrustyApiClient`.
+The **CrustyAPI** provides the central backend used by both the MVC web application and the Android application.
 
-The API client handles operations such as:
+The API handles functionality including:
 
-- Customer authentication
-- Customer management
+- Customer authentication and management
 - Menu retrieval and management
+- Menu image uploads
 - Cart operations
 - Order creation and management
 - Delivery addresses
-- Payment methods
-- Saved customer payment methods
-- Payment creation and status updates
+- Address suggestions and autocomplete integration
+- Payment methods and payment status updates
 - Staff management
 - Administrator management
-- CrabbyBot requests
-- Menu image uploads
+- Customer reviews
+- CrabbyBot
+- Order tracking
 
-The API base URL is configured through:
+The MVC application communicates with the API through `CrustyApiClient`.
 
-```json
-{
-  "Api": {
-    "BaseUrl": "https://crusty-crab-api-tameez-hjechmamdneee7c6.southafricanorth-01.azurewebsites.net/"
-  }
-}
-```
-
-This allows the MVC application to communicate with the deployed backend without hardcoding the API address throughout the application.
+The Android application communicates with the same API, allowing both applications to work with the shared backend.
 
 ---
 
-# 🛒 Ordering Flow
+## 📍 Address Autocomplete with Geoapify
+
+The project integrates **Geoapify** to improve the delivery address experience.
+
+Address autocomplete allows users to receive address suggestions while entering a delivery address, reducing manual input and helping users select an appropriate address.
+
+The integration supports the delivery address workflow alongside the system's existing address management functionality.
+
+---
+
+## 🛒 Ordering Flow
 
 A typical customer order follows this process:
 
 ```text
 Browse Menu
-     ↓
+    ↓
 Select Item
-     ↓
+    ↓
 Choose Spice Level / Add-ons
-     ↓
+    ↓
 Add to Cart
-     ↓
+    ↓
 Checkout
-     ↓
+    ↓
 Choose Collection / Delivery
-     ↓
+    ↓
+Enter or Select Delivery Address
+    ↓
+Use Address Suggestions, if Needed
+    ↓
 Choose Payment Method
-     ↓
+    ↓
 Create Order
-     ↓
+    ↓
 Create Payment
-     ↓
+    ↓
 Update Payment Status
-     ↓
-Generate Receipt / Confirmation
+    ↓
+Order Confirmation
 ```
-
-Customers can also proceed directly to checkout for individual menu items.
 
 ---
 
-# 💳 Payment Handling
+## 💳 Payment Handling
 
-The application supports payment methods stored through the backend.
+The system supports saved customer payment methods.
 
-Saved customer payment methods display masked card information using the final four digits rather than exposing the complete card number.
+Saved cards display masked information using only the final four digits.
 
-For example:
+Example:
 
 ```text
 •••• •••• •••• 1234
 ```
 
-Card security information such as CVC is not stored with saved payment methods and must be entered when required.
+Sensitive card security information, such as CVC, is not stored with saved payment methods.
 
-The current payment implementation is a **simulated payment flow** for the project rather than a connection to a live banking/payment gateway.
+The current payment implementation uses a **simulated payment flow** for the project and does not connect to a live banking or payment gateway.
 
 ---
 
-# 🤖 CrabbyBot
+## 🤖 CrabbyBot
 
-The application includes **CrabbyBot**, a hardcoded restaurant FAQ assistant.
+The project includes **CrabbyBot**, a controlled restaurant FAQ assistant.
 
-CrabbyBot provides predefined responses for common restaurant questions such as:
+CrabbyBot provides predefined responses to common questions regarding:
 
 - Menu information
 - Ordering
@@ -288,57 +295,53 @@ CrabbyBot provides predefined responses for common restaurant questions such as:
 - Payment
 - Restaurant information
 
-The bot is intentionally implemented as a controlled FAQ system rather than a generative AI service.
+CrabbyBot is implemented as a predefined FAQ system rather than a generative AI service.
 
 ---
 
-# 🔐 Authentication
+## 🔐 Authentication & Security
 
-The application supports separate customer and administrator login flows.
+The system supports separate customer and administrator authentication.
 
 Customer authentication uses:
 
-- Email/identifier
+- Email or identifier
 - Password
 - BCrypt password hashing
 
-The MVC frontend maintains the authenticated user's state using server-side session data.
+The MVC application maintains authenticated session state using server-side sessions.
 
-Administrative functionality is restricted through role checks within the MVC application.
+Administrative functionality is protected through role-based access checks.
+
+Communication with the deployed API uses HTTPS.
+
+Configuration values, credentials and API keys should be stored securely and should not be committed to the repository.
 
 ---
 
-# 🚀 Running the Project Locally
+## 🚀 Running the Project Locally
 
-## Requirements
+### Requirements
 
-Install:
+Install the following:
 
 - .NET 10 SDK
-- Visual Studio 2022 or later
+- Visual Studio 2022 or later, with support for the project's target framework
 - Git
-- MySQL Server if running the complete stack locally
+- MySQL Server for a complete local backend setup
+- Android Studio for the Android application
+- An Android emulator or compatible Android device
 
-## Clone the Repository
+### Clone the Repository
 
 ```bash
 git clone <repository-url>
-cd CrustyCrab
+cd <repository-folder>
 ```
 
-## Configure the API
+### Run the MVC Application
 
-Ensure `appsettings.json` contains the correct API URL:
-
-```json
-{
-  "Api": {
-    "BaseUrl": "https://crusty-crab-api-tameez-hjechmamdneee7c6.southafricanorth-01.azurewebsites.net/"
-  }
-}
-```
-
-## Run the MVC Application
+From the repository root, where `CrustyCrab.csproj` is located:
 
 ```bash
 dotnet restore
@@ -346,77 +349,161 @@ dotnet build
 dotnet run
 ```
 
-Alternatively, open:
+Alternatively, open `CrustyCrab.csproj` or the appropriate solution file in Visual Studio.
 
-```text
-CrustyCrab.csproj
+### Run the REST API
+
+Navigate to the API project:
+
+```bash
+cd CrustyAPI
+dotnet restore
+dotnet build
+dotnet run
 ```
 
-in Visual Studio and run the application from there.
+Configure the database connection and other required settings for your local environment before running the API.
+
+### Run the Android Application
+
+1. Open the repository's Android project in Android Studio.
+2. Allow Gradle to synchronise.
+3. Select an emulator or connected Android device.
+4. Confirm that the API base URL is configured for the intended environment.
+5. Run the application.
+
+### Configure Geoapify
+
+Address autocomplete requires the appropriate Geoapify configuration and API key.
+
+Configure the required key through the application's intended configuration mechanism. Do not commit private keys or secrets to GitHub.
 
 ---
 
-# ☁️ Continuous Deployment
+## 🧪 Testing
 
-The MVC application uses **GitHub Actions** to automate deployment to Azure App Service.
+The repository includes an API test project and Android testing support.
 
-The workflow is located at:
+### API Tests
+
+The API test project is located at:
 
 ```text
-.github/workflows/deploy-mvc.yml
+CrustyAPI.Tests/
 ```
 
-The workflow:
+Run the tests from the repository root:
 
-1. Checks out the repository
-2. Installs .NET 10
-3. Restores NuGet dependencies
-4. Builds the MVC project
-5. Publishes the application
-6. Deploys the published application to Azure App Service
+```bash
+dotnet test
+```
 
-The deployment uses an Azure App Service publish profile stored securely as a GitHub repository secret.
+### Android Tests
+
+From the Android project directory, run the relevant Gradle tests:
+
+```powershell
+.\gradlew.bat test
+```
+
+Additional instrumentation tests may require an emulator or connected Android device.
+
+---
+
+## ☁️ Continuous Integration & Deployment
+
+GitHub Actions can be used to automate building, testing and deployment through the repository's configured workflows.
+
+The general deployment process is:
 
 ```text
-GitHub
-   ↓
-Push to MVC-front-end
+Git Push
    ↓
 GitHub Actions
    ↓
-Build & Publish
+Build
+   ↓
+Automated Tests
+   ↓
+Publish
    ↓
 Azure App Service
 ```
 
+The web application and API are designed to be hosted through Microsoft Azure.
+
 ---
 
-# 🌿 Branches
+## 🌿 Git Branches
 
-The MVC development work is maintained on:
+The repository uses separate development branches for the major project components.
 
 ```text
-MVC-front-end
+main
+│
+├── MVC-front-end
+├── CrustyAPI
+└── CrustyAndroidApp
 ```
 
-The backend API is maintained separately from the MVC application.
+### `main`
 
-This separation allows the web frontend and backend API to be developed and deployed independently.
+The integrated branch containing the combined Crusty Crab system, including the web application, API and Android application.
+
+### `MVC-front-end`
+
+The ASP.NET Core MVC web application development branch.
+
+### `CrustyAPI`
+
+The ASP.NET Core REST API development branch.
+
+### `CrustyAndroidApp`
+
+The Kotlin Android application development branch.
+
+Changes from the individual development branches are integrated into `main` when appropriate.
 
 ---
 
-# 👥 Project
+## 🎥 Demonstration Videos
 
-**The Crusty Crab** was developed as a collaborative group software project for a client.
+### 🌐 Web Application Demonstration
 
-The project combines:
+[Watch the Web Application Demo](https://youtu.be/wsye5qpRHlw)
+
+### 📱 Android Application Demonstration
+
+[Watch the Android Application Demo](https://youtu.be/sIX8pzTgMb4)
+
+---
+
+## 📑 Project Presentation
+
+[View the Crusty Crab Project Presentation](Documentation/Crusty%20Crab%20Implementation%20and%20Functionality.pdf)
+
+---
+
+## 👥 Project
+
+**The Crusty Crab** was developed as a collaborative group software project.
+
+The system combines:
 
 - Web development
+- Mobile development
 - REST API development
 - Database design
-- Mobile development
-- Cloud deployment
+- Authentication and authorization
+- Ordering and payment workflows
+- Address autocomplete integration
 - API integration
-- Authentication
-- Restaurant ordering workflows
+- Cloud deployment
+- Automated testing
+- Continuous integration and deployment
 
+---
+
+## 🦀 The Crusty Crab
+
+**One restaurant. Three applications. One API.**
