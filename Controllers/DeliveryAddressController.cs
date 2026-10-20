@@ -37,11 +37,35 @@ namespace CrustyCrab.Controllers
             return RedirectToAction("Index", "Customer");
         }
 
+
         [HttpPost]
         public async Task<IActionResult> DeleteForm(int id)
         {
-            await _api.DeleteAddress(id);
+            var result = await _api.DeleteAddress(id);
+
+            if (result.Success)
+            {
+                TempData["Success"] = "Delivery address removed.";
+            }
+            else
+            {
+                TempData["Error"] = result.ErrorMessage;
+            }
+
             return RedirectToAction("Index", "Customer");
+        }
+
+
+
+        [HttpGet]
+        public async Task<IActionResult> SearchAddressSuggestions([FromQuery] string q)
+        {
+            if (string.IsNullOrWhiteSpace(q) || q.Trim().Length < 3)
+                return Json(Array.Empty<AddressSuggestion>());
+
+            var suggestions = await _api.SearchAddressSuggestions(q.Trim());
+
+            return Json(suggestions ?? new List<AddressSuggestion>());
         }
 
         [HttpGet]
@@ -79,10 +103,22 @@ namespace CrustyCrab.Controllers
             return address == null ? NotFound() : Json(address);
         }
 
+
         [HttpDelete]
         public async Task<IActionResult> Delete(int id)
         {
-            return await _api.DeleteAddress(id) ? NoContent() : NotFound();
+            var result = await _api.DeleteAddress(id);
+
+            if (result.Success)
+            {
+                return NoContent();
+            }
+
+            return Conflict(new
+            {
+                message = result.ErrorMessage ?? "The delivery address could not be deleted."
+            });
         }
+
     }
 }

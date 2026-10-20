@@ -4,8 +4,6 @@
     ViewData["Title"] = "Edit Menu Item";
 }
 
-
-
 <div class="page-head">
     <div class="page-head-inner">
         <div>
@@ -81,6 +79,28 @@
                        name="Availability"
                        value="true"
                 @(Model.Availability ? "checked" : "") />
+
+                <input type="hidden"
+                       name="Availability"
+                       value="false" />
+            </label>
+
+            <label class="addon" style="margin-bottom:18px;">
+                <span>
+                    <strong>Popular Dish</strong>
+                    <small>
+                        Feature this item in the Popular Dishes section on the homepage.
+                    </small>
+                </span>
+
+                <input type="checkbox"
+                       name="IsPopular"
+                       value="true"
+                @(Model.IsPopular ? "checked" : "") />
+
+                <input type="hidden"
+                       name="IsPopular"
+                       value="false" />
             </label>
 
             <button class="btn-blue" type="submit">
@@ -90,4 +110,5 @@
         </form>
 
     </div>
+
 </div>

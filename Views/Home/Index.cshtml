@@ -1,4 +1,6 @@
-﻿@{
+﻿@model List<CrustyCrab.Models.MenuItem>
+
+@{
     ViewData["Title"] = "Overview";
 }
 
@@ -9,10 +11,12 @@
             Fresh Cajun Seafood &bull; Montgomery Park
         </span>
 
+        
         <h1>
             Authentic Cajun Seafood Boils,<br />
             <span class="grad">The Best in Johannesburg.</span>
         </h1>
+        
 
         <p>
             Explore our menu, customise your order, and enjoy fresh Cajun
@@ -20,74 +24,95 @@
         </p>
 
         <div class="hero-actions">
-
             <a asp-controller="Menu"
                asp-action="Index"
                class="btn-blue btn-launch">
                 Order Now &rarr;
             </a>
-
         </div>
     </div>
 
-    <div class="hub">
+</section>
 
-        <div class="hub-head">
-            <span class="eyebrow">
-                Explore The Crusty Crab
-            </span>
+<section class="popular-section">
 
-            <span class="hub-tag mono">
-                Fresh &bull; Bold &bull; Cajun
-            </span>
-        </div>
-
-        <div class="hub-grid">
-
-            <a asp-controller="Menu"
-               asp-action="Index"
-               class="hub-item">
-                1. Browse Menu
-                <span>&rsaquo;</span>
-            </a>
-
-            <a asp-controller="Menu"
-               asp-action="Customise"
-               asp-route-id="1"
-               class="hub-item">
-                2. Customise Your Order
-                <span>&rsaquo;</span>
-            </a>
-
-            <a asp-controller="Cart"
-               asp-action="Index"
-               class="hub-item">
-                3. Your Cart
-                <span>&rsaquo;</span>
-            </a>
-
-            <a asp-controller="Checkout"
-               asp-action="Index"
-               class="hub-item">
-                4. Checkout &amp; Pay
-                <span>&rsaquo;</span>
-            </a>
-
-            <a asp-controller="Kitchen"
-               asp-action="Tracker"
-               class="hub-item">
-                5. Track Your Order
-                <span>&rsaquo;</span>
-            </a>
-
-            <a asp-controller="Menu"
-               asp-action="Review"
-               class="hub-item">
-                6. Leave Feedback
-                <span>&rsaquo;</span>
-            </a>
-
-        </div>
+    <div class="popular-heading">
+        <span class="eyebrow">Our Favourites</span>
+        <h2>Popular Dishes</h2>
+        <p class="muted">
+            Discover some of the dishes our team has selected for you.
+        </p>
     </div>
+
+    @if (Model != null && Model.Any())
+    {
+        <div class="popular-grid">
+
+            @foreach (var item in Model)
+            {
+                <article class="popular-card">
+
+                    @if (!string.IsNullOrWhiteSpace(item.ImageUrl))
+                    {
+                        <img class="popular-image"
+                             src="@item.ImageUrl"
+                             alt="@item.Name" />
+                    }
+                    else
+                    {
+                        <div class="popular-image popular-image-placeholder">
+                            <span>No image available</span>
+                        </div>
+                    }
+
+                    <div class="popular-card-body">
+
+                        <span class="popular-category">
+                            @item.Category
+                        </span>
+
+                        <h3>@item.Name</h3>
+
+                        <p>
+                            @(string.IsNullOrWhiteSpace(item.Description)
+                                ? "A delicious Crusty Crab favourite."
+                                : item.Description)
+                        </p>
+
+                        <div class="popular-card-footer">
+                            <strong>
+                                @item.Price.ToString("C",
+                                    System.Globalization.CultureInfo.GetCultureInfo("en-ZA"))
+                            </strong>
+
+                            <a asp-controller="Menu"
+                               asp-action="Customise"
+                               asp-route-id="@item.Id"
+                               class="btn-blue">
+                                View Dish
+                            </a>
+                        </div>
+
+                    </div>
+                </article>
+            }
+
+        </div>
+    }
+    else
+    {
+        <div class="popular-empty">
+            <h3>Our favourites are coming soon!</h3>
+            <p>
+                Check out the full menu to discover your next favourite dish.
+            </p>
+
+            <a asp-controller="Menu"
+               asp-action="Index"
+               class="btn-blue">
+                Browse Menu
+            </a>
+        </div>
+    }
 
 </section>
