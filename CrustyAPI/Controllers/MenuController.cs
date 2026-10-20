@@ -119,6 +119,16 @@ public class MenuController : ControllerBase
         return Ok(menuItem);
     }
 
+    // GET: api/menu/popular
+    [HttpGet("popular")]
+    public async Task<IActionResult> GetPopularMenuItems()
+    {
+        var menuItems = await _menuService.GetPopularMenuItems();
+
+        return Ok(menuItems);
+    }
+
+
     // GET: api/menu/{id}
     [HttpGet("{id}")]
     public async Task<IActionResult> GetMenuItem(int id)

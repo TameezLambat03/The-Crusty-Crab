@@ -33,6 +33,13 @@ namespace CrustyAPI
             builder.Services.AddScoped<PaymentService>();
             builder.Services.AddScoped<AdminStaffService>();
             builder.Services.AddScoped<CrabbyBotService>();
+            builder.Services.AddScoped<GeoapifyService>();
+            builder.Services.AddScoped<ReviewService>();
+            builder.Services.AddHttpClient("Geoapify", client =>
+            {
+                client.BaseAddress = new Uri("https://api.geoapify.com/");
+                client.Timeout = TimeSpan.FromSeconds(10);
+            });
             var app = builder.Build();
             var imagesPath = Path.Combine(app.Environment.ContentRootPath, "Images");
 
