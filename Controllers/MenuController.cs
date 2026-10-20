@@ -169,10 +169,7 @@ namespace CrustyCrab.Controllers
             return NoContent();
         }
 
-        public IActionResult Review()
-        {
-            return View();
-        }
+        
 
         private bool IsAdmin()
         {

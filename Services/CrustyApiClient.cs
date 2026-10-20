@@ -414,12 +414,54 @@ namespace CrustyCrab.Services
 
             return await response.Content.ReadFromJsonAsync<T>();
         }
-    }
 
-    public class ApiOrderItemRequest
-    {
-        public int MenuItemID { get; set; }
-        public int Quantity { get; set; }
-        public string? Notes { get; set; }
+
+        public Task<ApiCustomerReview?> CreateReview(
+            int customerId,
+            int rating,
+            string comment)
+        {
+            var body = new
+            {
+                Rating = rating,
+                Comment = comment
+            };
+
+            return Post<ApiCustomerReview>(
+                $"api/review/customer/{customerId}",
+                body);
+        }
+
+        public Task<List<ApiCustomerReview>?> GetReviews()
+        {
+            return Get<List<ApiCustomerReview>>("api/review");
+        }
+
+        public Task<ApiCustomerReview?> RespondToReview(
+            int reviewId,
+            int adminId,
+            string adminResponse)
+        {
+            var body = new
+            {
+                AdminResponse = adminResponse
+            };
+
+            return Put<ApiCustomerReview>(
+                $"api/review/{reviewId}/response/{adminId}",
+                body);
+        }
+        public Task<List<ApiCustomerReview>?> GetCustomerReviews(int customerId)
+        {
+            return Get<List<ApiCustomerReview>>(
+                $"api/review/customer/{customerId}");
+        }
+
     }
+}
+public class ApiOrderItemRequest
+{
+    public int MenuItemID { get; set; }
+    public int Quantity { get; set; }
+    public string? Notes { get; set; }
 }

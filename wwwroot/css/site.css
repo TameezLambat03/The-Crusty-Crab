@@ -763,10 +763,48 @@ a {
     }
 
 .stars {
-    font-size: 22px;
-    color: #fbbf24;
-    letter-spacing: 8px;
-    margin: 4px 0 20px;
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+    gap: 6px;
+    margin: 10px 0 20px;
+    width: fit-content;
+}
+
+    .stars input[type="radio"] {
+        display: none;
+    }
+
+    .stars label {
+        display: inline-block;
+        margin: 0;
+        padding: 0;
+        color: #64748b;
+        font-size: 36px;
+        line-height: 1;
+        cursor: pointer;
+    }
+
+        .stars label:hover,
+        .stars label:hover ~ label,
+        .stars input:checked ~ label {
+            color: #fbbf24;
+        }
+
+.review-card .field label {
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.review-card textarea {
+    min-height: 120px;
+    font-size: 14px;
+    resize: vertical;
+}
+
+.review-card {
+    max-width: 500px;
+    padding: 30px;
 }
 
 .review-card .field {
@@ -1931,6 +1969,36 @@ body {
         width: min(280px, calc(100vw - 32px));
     }
 }
+.review-card .btn-block {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: 14px;
+    padding: 14px 20px;
+    min-height: 48px;
+    line-height: 1.4;
+    text-align: center;
+}
+
+.review-card form > .btn-block + .btn-block {
+    margin-top: 12px;
+}
 
 
 
+.review-stars {
+    display: flex;
+    gap: 4px;
+    font-size: 22px;
+    letter-spacing: normal;
+    margin: 0;
+    white-space: nowrap;
+}
+
+    .review-stars .filled {
+        color: #fbbf24;
+    }
+
+    .review-stars .empty {
+        color: #64748b;
+    }
