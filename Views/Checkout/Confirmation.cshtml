@@ -1,20 +1,14 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "Order Confirmed";
+    var orderId = (int)ViewBag.OrderId;
+    var canSpin = ViewBag.CanSpin is bool value && value;
 }
 
 <div class="narrow stack-top">
     <div class="card-panel" style="text-align:center; padding:40px 24px;">
-
-        <div style="font-size:52px; margin-bottom:16px;">
-            🦀
-        </div>
-
+        <div style="font-size:52px; margin-bottom:16px;">🦀</div>
         <span class="eyebrow">The Crusty Crab</span>
-
-        <h1 style="margin:12px 0;">
-            Order Confirmed!
-        </h1>
+        <h1 style="margin:12px 0;">Order Confirmed!</h1>
 
         <p style="color:var(--muted); line-height:1.7; margin-bottom:24px;">
             Thank you for your order! Your payment has been processed
@@ -22,28 +16,182 @@
         </p>
 
         <p style="margin-bottom:28px;">
-            <strong>Order number:</strong> #@ViewBag.OrderId
+            <strong>Order number:</strong> #@orderId
         </p>
 
-        <div style="display:flex; justify-content:center; gap:12px; flex-wrap:wrap;">
+        @if (canSpin)
+        {
+            <hr style="margin:28px 0; opacity:.2;" />
 
-            <a asp-controller="Menu"
-               asp-action="Index"
-               class="btn-blue">
+            <h2 style="margin-bottom:8px;">🎁 Try your luck!</h2>
+            <p style="color:var(--muted); margin-bottom:24px;">
+                Spin the wheel to reveal your reward.
+            </p>
+
+            <div style="position:relative; width:min(300px, 80vw); margin:0 auto 24px;">
+                <div style="
+                    position:absolute;
+                    top:-8px;
+                    left:50%;
+                    transform:translateX(-50%);
+                    z-index:2;
+                    width:0;
+                    height:0;
+                    border-left:14px solid transparent;
+                    border-right:14px solid transparent;
+                    border-top:28px solid #202020;">
+                </div>
+
+                <div id="rewardWheel" style="
+                    width:100%;
+                    aspect-ratio:1;
+                    border-radius:50%;
+                    border:6px solid #202020;
+                    box-sizing:border-box;
+                    background:conic-gradient(
+                    #f6bd60 0deg 72deg,
+                    #84a59d 72deg 144deg,
+                    #f28482 144deg 216deg,
+                    #90caf9 216deg 288deg,
+                    #cdb4db 288deg 360deg
+                    );
+                    transition:transform 4s cubic-bezier(.12,.75,.15,1);
+                    display:flex;
+                    align-items:center;
+                    justify-content:center;
+                    box-shadow:0 8px 20px #0002;">
+                    <div style="
+                        background:white;
+                        border-radius:50%;
+                        width:76px;
+                        height:76px;
+                        display:flex;
+                        align-items:center;
+                        justify-content:center;
+                        font-size:28px;
+                        box-shadow:0 2px 8px #0002;">
+                        🦀
+                    </div>
+                </div>
+            </div>
+
+            <button id="spinButton" type="button" class="btn-blue">
+                Spin the Wheel
+            </button>
+
+            <p id="spinMessage"
+               role="status"
+               aria-live="polite"
+               style="margin-top:18px; color:var(--muted);">
+            </p>
+
+            <div id="rewardResult"
+                 hidden
+                 style="margin-top:20px; padding:20px; border-radius:12px;
+                background:#f7f7f7; color:#222;">
+
+                <h3 id="prizeName" style="margin:0 0 10px; color:#222;"></h3>
+
+                <p id="rewardCode" style="margin:0 0 8px; color:#222;"></p>
+
+                <p id="rewardExpiry" style="margin:0; color:#222;"></p>
+            </div>
+        }
+
+        <div style="display:flex; justify-content:center; gap:12px; flex-wrap:wrap; margin-top:28px;">
+            <a asp-controller="Menu" asp-action="Index" class="btn-blue">
                 Back to Menu
             </a>
-
-            <a asp-controller="Review"
-               asp-action="Create"
-               class="btn-blue">
+            <a asp-controller="Review" asp-action="Create" class="btn-blue">
                 ⭐ Leave a Review
             </a>
-
         </div>
 
         <p style="font-size:13px; color:var(--muted); margin-top:24px;">
             Enjoy your meal! We'd love to hear what you think.
         </p>
-
     </div>
 </div>
+
+@if (canSpin)
+{
+    <script>
+        (() => {
+            const button = document.getElementById("spinButton");
+            const wheel = document.getElementById("rewardWheel");
+            const message = document.getElementById("spinMessage");
+            const result = document.getElementById("rewardResult");
+            const prizeName = document.getElementById("prizeName");
+            const rewardCode = document.getElementById("rewardCode");
+            const rewardExpiry = document.getElementById("rewardExpiry");
+
+            const orderId = @orderId;
+            let spinning = false;
+            let rotation = 0;
+
+            button.addEventListener("click", async () => {
+                if (spinning) return;
+
+                spinning = true;
+                button.disabled = true;
+                message.textContent = "Finding your reward...";
+
+                try {
+                    const response = await fetch(
+                        '@Url.Action("SpinReward", "Checkout")?orderId=' + orderId,
+                        {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/json"
+                            }
+                        }
+                    );
+
+                    const data = await response.json();
+
+                    if (!response.ok) {
+                        throw new Error(data.message || "Unable to spin the wheel.");
+                    }
+
+                    // Five equal visual sections; the actual prize is decided by the API.
+                    const prizes = [
+                        "No prize this time",
+                        "5% Off",
+                        "10% Off",
+                        "15% Off",
+                        "20% Off"
+                    ];
+
+                    const prizeIndex = prizes.indexOf(data.prizeName);
+                    const sectionAngle = 360 / prizes.length;
+                    const targetAngle = prizeIndex >= 0
+                        ? (360 - (prizeIndex * sectionAngle + sectionAngle / 2))
+                        : 0;
+
+                    rotation += 360 * 5 + targetAngle;
+                    wheel.style.transform = `rotate(${rotation}deg)`;
+                    message.textContent = "Your wheel is spinning...";
+
+                    await new Promise(resolve => setTimeout(resolve, 4100));
+
+                    prizeName.textContent = data.prizeName;
+                    rewardCode.textContent = data.rewardCode
+                        ? "Reward code: " + data.rewardCode
+                        : "Better luck next time!";
+                    rewardExpiry.textContent = data.expiresAtUtc
+                        ? "Expires: " + new Date(data.expiresAtUtc).toLocaleDateString()
+                        : "";
+
+                    result.hidden = false;
+                    message.textContent = "Thanks for ordering with The Crusty Crab!";
+                    button.textContent = "Spin Used";
+                } catch (error) {
+                    message.textContent = error.message || "Something went wrong. Please try again.";
+                    button.disabled = false;
+                } finally {
+                    spinning = false;
+                }
+            });
+        })();
+    </script>
+}

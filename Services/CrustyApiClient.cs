@@ -457,11 +457,20 @@ namespace CrustyCrab.Services
                 $"api/review/customer/{customerId}");
         }
 
+
+        public Task<ApiReward?> SpinReward(int customerId, int orderId)
+        {
+            return Post<ApiReward>(
+                $"api/Reward/orders/{orderId}/spin",
+                new { CustomerId = customerId }
+            );
+        }
     }
-}
-public class ApiOrderItemRequest
-{
-    public int MenuItemID { get; set; }
-    public int Quantity { get; set; }
-    public string? Notes { get; set; }
+
+    public class ApiOrderItemRequest
+    {
+        public int MenuItemID { get; set; }
+        public int Quantity { get; set; }
+        public string? Notes { get; set; }
+    }
 }
