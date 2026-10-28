@@ -31,6 +31,7 @@ public class AppDbContext : DbContext
     public DbSet<Payment> Payments { get; set; }
     public DbSet<CustomerPaymentMethod> CustomerPaymentMethods { get; set; }
     public DbSet<CustomerReview> CustomerReviews { get; set; }
+    public DbSet<CustomerReward> CustomerRewards { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -182,6 +183,7 @@ public class AppDbContext : DbContext
                 .WithMany()
                 .HasForeignKey(e => e.PaymentMethodID)
                 .OnDelete(DeleteBehavior.Restrict);
+
             modelBuilder.Entity<CustomerReview>(entity =>
             {
                 entity.ToTable("Customer_Review");
@@ -204,7 +206,42 @@ public class AppDbContext : DbContext
                     .WithMany()
                     .HasForeignKey(r => r.AdminID)
                     .OnDelete(DeleteBehavior.SetNull);
+
+                modelBuilder.Entity<CustomerReward>(entity =>
+                {
+                    entity.ToTable("Customer_Reward");
+
+                    entity.HasKey(r => r.CustomerRewardID);
+
+                    entity.Property(r => r.PrizeName)
+                        .HasMaxLength(100)
+                        .IsRequired();
+
+                    entity.Property(r => r.DiscountPercent)
+                        .HasPrecision(5, 2);
+
+                    entity.Property(r => r.RewardCode)
+                        .HasMaxLength(50);
+
+                    entity.HasIndex(r => r.OrderID)
+                        .IsUnique();
+
+                    entity.HasIndex(r => r.RewardCode)
+                        .IsUnique();
+
+                    entity.HasOne<Customer>()
+                        .WithMany()
+                        .HasForeignKey(r => r.CustomerID)
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    entity.HasOne<Order>()
+                        .WithMany()
+                        .HasForeignKey(r => r.OrderID)
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
             });
+
         });
     }
 

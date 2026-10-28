@@ -35,6 +35,7 @@ namespace CrustyAPI
             builder.Services.AddScoped<CrabbyBotService>();
             builder.Services.AddScoped<GeoapifyService>();
             builder.Services.AddScoped<ReviewService>();
+            builder.Services.AddScoped<RewardService>();
             builder.Services.AddHttpClient("Geoapify", client =>
             {
                 client.BaseAddress = new Uri("https://api.geoapify.com/");
