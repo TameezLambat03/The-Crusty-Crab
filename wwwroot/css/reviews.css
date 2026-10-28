@@ -1,0 +1,113 @@
+/* Review card */
+.review-card {
+    max-width: 396px;
+    margin: 0 auto;
+    text-align: center;
+    padding: 24px 30px 30px;
+}
+
+    .review-card .eyebrow {
+        display: block;
+        margin-bottom: 8px;
+    }
+
+    .review-card h2 {
+        margin: 0 0 18px;
+        font-size: 18px;
+        font-weight: 800;
+        padding-bottom: 16px;
+        border-bottom: 1px solid var(--line);
+    }
+
+/* Interactive rating stars */
+.stars {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-end;
+    gap: 6px;
+    margin: 10px 0 20px;
+    width: fit-content;
+}
+
+    .stars input[type="radio"] {
+        display: none;
+    }
+
+    .stars label {
+        display: inline-block;
+        margin: 0;
+        padding: 0;
+        color: #64748b;
+        font-size: 36px;
+        line-height: 1;
+        cursor: pointer;
+    }
+
+        .stars label:hover,
+        .stars label:hover ~ label,
+        .stars input:checked ~ label {
+            color: #fbbf24;
+        }
+
+/* Review form fields */
+.review-card .field label {
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.review-card textarea {
+    min-height: 120px;
+    font-size: 14px;
+    resize: vertical;
+}
+
+/* Final review card overrides from the original CSS */
+.review-card {
+    max-width: 500px;
+    padding: 30px;
+}
+
+    .review-card .field {
+        text-align: left;
+    }
+
+    .review-card textarea {
+        min-height: 74px;
+        resize: none;
+        border-radius: 12px;
+        padding: 14px;
+    }
+
+    /* Review form buttons */
+    .review-card .btn-block {
+        display: block;
+        width: 100%;
+        box-sizing: border-box;
+        margin-top: 14px;
+        padding: 14px 20px;
+        min-height: 48px;
+        line-height: 1.4;
+        text-align: center;
+    }
+
+    .review-card form > .btn-block + .btn-block {
+        margin-top: 12px;
+    }
+
+/* Displayed review ratings */
+.review-stars {
+    display: flex;
+    gap: 4px;
+    font-size: 22px;
+    letter-spacing: normal;
+    margin: 0;
+    white-space: nowrap;
+}
+
+    .review-stars .filled {
+        color: #fbbf24;
+    }
+
+    .review-stars .empty {
+        color: #64748b;
+    }

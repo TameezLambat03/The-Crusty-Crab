@@ -1,0 +1,47 @@
+
+/* Explore panel styles retained for other views, if needed */
+.hub {
+    background: #050a1a;
+    border: 1px solid var(--line);
+    border-radius: 24px;
+    padding: 28px 24px 26px;
+}
+
+.hub-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 20px;
+}
+
+.hub-tag {
+    font-size: 9px;
+    color: var(--muted);
+    background: #0a1128;
+    padding: 4px 9px;
+    border-radius: 999px;
+}
+
+.hub-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+
+.hub-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #070c1d;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 14px;
+    font-size: 10px;
+    font-weight: 700;
+}
+
+    .hub-item span {
+        color: var(--cyan);
+    }
