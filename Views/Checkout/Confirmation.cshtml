@@ -1,0 +1,49 @@
+﻿
+@{
+    ViewData["Title"] = "Order Confirmed";
+}
+
+<div class="narrow stack-top">
+    <div class="card-panel" style="text-align:center; padding:40px 24px;">
+
+        <div style="font-size:52px; margin-bottom:16px;">
+            🦀
+        </div>
+
+        <span class="eyebrow">The Crusty Crab</span>
+
+        <h1 style="margin:12px 0;">
+            Order Confirmed!
+        </h1>
+
+        <p style="color:var(--muted); line-height:1.7; margin-bottom:24px;">
+            Thank you for your order! Your payment has been processed
+            and your order has been placed successfully.
+        </p>
+
+        <p style="margin-bottom:28px;">
+            <strong>Order number:</strong> #@ViewBag.OrderId
+        </p>
+
+        <div style="display:flex; justify-content:center; gap:12px; flex-wrap:wrap;">
+
+            <a asp-controller="Menu"
+               asp-action="Index"
+               class="btn-blue">
+                Back to Menu
+            </a>
+
+            <a asp-controller="Review"
+               asp-action="Create"
+               class="btn-blue">
+                ⭐ Leave a Review
+            </a>
+
+        </div>
+
+        <p style="font-size:13px; color:var(--muted); margin-top:24px;">
+            Enjoy your meal! We'd love to hear what you think.
+        </p>
+
+    </div>
+</div>

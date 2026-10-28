@@ -204,7 +204,16 @@ namespace CrustyCrab.Controllers
                     await _api.RemoveCartItem(cartItem.CartItemID);
             }
 
-            return RedirectToAction("Review", "Menu");
+            return RedirectToAction(
+     nameof(Confirmation),
+     new { orderId = order.OrderID }
+ );
+        }
+        [HttpGet]
+        public IActionResult Confirmation(int orderId)
+        {
+            ViewBag.OrderId = orderId;
+            return View();
         }
 
         private static decimal AddonTotal(IEnumerable<string>? addons)
