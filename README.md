@@ -9,6 +9,12 @@ The MVC application communicates with the CrustyAPI backend through a central HT
 
 **Current development environment:** Local development. Previous Azure deployments are no longer active.
 
+# YouTube Video Demo
+
+Watch the Crusty Crab application demonstration:
+
+[![Watch the demonstration](https://img.youtube.com/vi/wARdxpGVP3A/0.jpg)](https://youtu.be/wARdxpGVP3A)
+
 ---
 
 ## 📋 Features
