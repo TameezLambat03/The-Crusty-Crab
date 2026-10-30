@@ -83,7 +83,7 @@ public class MenuController : ControllerBase
             });
         }
 
-        const long maxFileSize = 5 * 1024 * 1024;
+        const long maxFileSize = 10 * 1024 * 1024;
 
         if (image.Length > maxFileSize)
         {

@@ -6,7 +6,7 @@ namespace CrustyAPI
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -35,12 +35,36 @@ namespace CrustyAPI
             builder.Services.AddScoped<CrabbyBotService>();
             builder.Services.AddScoped<GeoapifyService>();
             builder.Services.AddScoped<ReviewService>();
+            builder.Services.AddScoped<RewardService>();
             builder.Services.AddHttpClient("Geoapify", client =>
             {
                 client.BaseAddress = new Uri("https://api.geoapify.com/");
                 client.Timeout = TimeSpan.FromSeconds(10);
             });
             var app = builder.Build();
+
+            try
+            {
+                using var scope = app.Services.CreateScope();
+
+                var context = scope.ServiceProvider
+                    .GetRequiredService<AppDbContext>();
+
+                Console.WriteLine("Starting admin seeder...");
+
+                Console.WriteLine(
+                    $"Database: {context.Database.GetDbConnection().Database}");
+
+                await AdminSeeder.SeedAsync(context);
+
+                Console.WriteLine("Admin seeder finished.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("ADMIN SEEDING FAILED:");
+                Console.WriteLine(ex.ToString());
+                throw;
+            }
             var imagesPath = Path.Combine(app.Environment.ContentRootPath, "Images");
 
             Directory.CreateDirectory(imagesPath);
