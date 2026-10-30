@@ -1,0 +1,152 @@
+
+/* ==============================
+   GLOBAL VARIABLES AND BASE STYLES
+   ============================== */
+
+:root {
+    --bg: #020617;
+    --card: #070c1d;
+    --input: #0a1128;
+    --line: rgba(148, 163, 184, 0.12);
+    --text: #ffffff;
+    --muted: #94a3b8;
+    --cyan: #06b6d4;
+    --blue: #1d4ed8;
+    --green: #059669;
+    --amber: #f59e0b;
+    --red: #f87171;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.mono {
+    font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
+}
+
+/* ==============================
+   COMMON BUTTONS
+   ============================== */
+
+.btn-blue, .btn-green {
+    white-space: nowrap;
+    display: inline-block;
+    border: 0;
+    border-radius: 10px;
+    color: #fff;
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 11px;
+    padding: 10px 16px;
+    cursor: pointer;
+    text-align: center;
+}
+
+.btn-blue {
+    background: var(--blue);
+    box-shadow: 0 4px 16px rgba(29, 78, 216, .35);
+}
+
+.btn-green {
+    background: var(--green);
+    box-shadow: 0 4px 16px rgba(5, 150, 105, .35);
+}
+
+.btn-block {
+    display: block;
+    width: 100%;
+    padding: 16px;
+    font-size: 11px;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    border-radius: 14px;
+}
+
+.btn-ghost {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: #e2e8f0;
+    background: #050a1a;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 14px 18px;
+}
+
+.btn-launch {
+    font-size: 12px;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    padding: 15px 24px;
+    box-shadow: 0 6px 22px rgba(29, 78, 216, .45);
+}
+
+/* ==============================
+   COMMON TEXT AND CONTAINERS
+   ============================== */
+
+.eyebrow {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--cyan);
+}
+
+.narrow {
+    max-width: 830px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+.hero-wrap {
+    max-width: 940px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+.card-panel {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 24px;
+    padding: 28px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, .35);
+}
+
+.api-error {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--red);
+    background: rgba(248, 113, 113, .08);
+    border: 1px solid rgba(248, 113, 113, .3);
+    border-radius: 10px;
+    padding: 10px 14px;
+    margin-bottom: 16px;
+}
+
+.brand-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}

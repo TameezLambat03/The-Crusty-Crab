@@ -204,9 +204,67 @@ namespace CrustyCrab.Controllers
                     await _api.RemoveCartItem(cartItem.CartItemID);
             }
 
-            return RedirectToAction("Review", "Menu");
+            return RedirectToAction(
+     nameof(Confirmation),
+     new { orderId = order.OrderID }
+ );
+        }
+        [HttpGet]
+        public IActionResult Confirmation(int orderId)
+        {
+            ViewBag.OrderId = orderId;
+
+            var customerId = HttpContext.Session.GetInt32("UserId");
+            var role = HttpContext.Session.GetString("Role");
+
+            ViewBag.CanSpin =
+                customerId.HasValue &&
+                string.Equals(
+                    role,
+                    "Customer",
+                    StringComparison.OrdinalIgnoreCase);
+
+            return View();
         }
 
+        [HttpPost]
+        public async Task<IActionResult> SpinReward(int orderId)
+        {
+            var customerId = HttpContext.Session.GetInt32("UserId");
+            var role = HttpContext.Session.GetString("Role");
+
+            if (!customerId.HasValue ||
+                !string.Equals(
+                    role,
+                    "Customer",
+                    StringComparison.OrdinalIgnoreCase))
+            {
+                return Unauthorized(new
+                {
+                    message = "Please log in as a customer to spin the wheel."
+                });
+            }
+
+            if (orderId <= 0)
+            {
+                return BadRequest(new
+                {
+                    message = "Invalid order number."
+                });
+            }
+
+            var reward = await _api.SpinReward(customerId.Value, orderId);
+
+            if (reward == null)
+            {
+                return BadRequest(new
+                {
+                    message = "We couldn't load your reward. Please try again."
+                });
+            }
+
+            return Json(reward);
+        }
         private static decimal AddonTotal(IEnumerable<string>? addons)
         {
             return (addons ?? Enumerable.Empty<string>()).Sum(a => AddonPrices.TryGetValue(a, out var price) ? price : 0m);

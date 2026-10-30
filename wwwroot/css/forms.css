@@ -1,0 +1,109 @@
+
+/* THE CRUSTY CRAB — FORMS */
+/* Form fields */
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-width: 0;
+}
+
+.field label {
+    color: var(--muted);
+    font-size: 14px;
+    font-weight: 700;
+}
+
+    .field input,
+    .field select,
+    .field textarea {
+        box-sizing: border-box;
+        width: 100%;
+        padding: 12px 14px;
+        background: var(--input);
+        color: var(--text);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        font: inherit;
+        font-size: 16px;
+        outline: none;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .field input:focus,
+    .field select:focus,
+    .field textarea:focus {
+        border-color: var(--cyan);
+        box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.12);
+    }
+
+    .field input::placeholder,
+    .field textarea::placeholder {
+        color: var(--muted);
+        opacity: 0.75;
+    }
+
+.field textarea {
+    min-height: 110px;
+    resize: vertical;
+}
+
+.field-row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+/* Filter controls */
+.filter-group {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Checkout add-on options */
+.opt-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.addon {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+    .addon input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        margin-top: 3px;
+        accent-color: var(--cyan);
+        flex-shrink: 0;
+    }
+
+.addon-right {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.addon-price {
+    color: var(--cyan);
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+/* Responsive form layout */
+@media (max-width: 560px) {
+    .field-row {
+        grid-template-columns: 1fr;
+    }
+
+    .opt-row {
+        gap: 10px;
+    }
+}
+

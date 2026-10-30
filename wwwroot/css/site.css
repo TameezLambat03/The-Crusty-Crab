@@ -1,5 +1,5 @@
 
-:root {
+/*:root {
     --bg: #020617;
     --card: #070c1d;
     --input: #0a1128;
@@ -213,10 +213,10 @@ a {
         .pill-nav a.active {
             background: var(--blue);
             color: #fff;
-        }
+        }*/
 
 /* Homepage hero */
-.hero {
+/*.hero {
     max-width: 1200px;
     margin: 0 auto;
     padding: 64px 24px 64px 48px;
@@ -302,10 +302,10 @@ a {
     text-transform: uppercase;
     padding: 15px 24px;
     box-shadow: 0 6px 22px rgba(29, 78, 216, .45);
-}
+}*/
 
 /* Explore panel styles retained for other views, if needed */
-.hub {
+/*.hub {
     background: #050a1a;
     border: 1px solid var(--line);
     border-radius: 24px;
@@ -1131,10 +1131,10 @@ a {
     width: 100%;
     height: 100%;
     object-fit: contain;
-}
+}*/
 
 /* CRABBYBOT */
-.crabby-bubble {
+/*.crabby-bubble {
     position: fixed;
     right: 24px;
     bottom: 24px;
@@ -1253,10 +1253,10 @@ a {
         right: 16px;
         bottom: 16px;
     }
-}
+}*/
 
 /* Popular dishes section — preserved */
-.popular-section {
+/*.popular-section {
     max-width: 1200px;
     margin: 60px auto;
     padding: 0 24px 40px;
@@ -1386,75 +1386,14 @@ a {
     .popular-card-footer {
         align-items: flex-start;
     }
-}
+}*/
 
 
-/* ==============================
-   GLOBAL APP SIZE IMPROVEMENTS
-   ============================== */
-/* Slightly increase the overall text size */
-html {
-    font-size: 17px;
-}
-
-/* Make form fields more comfortable to use */
-input,
-select,
-textarea {
-    font-size: 15px;
-    padding: 12px 14px;
-    min-height: 44px;
-    box-sizing: border-box;
-}
-
-    /* Make buttons a little larger */
-    button,
-    .btn,
-    input[type="submit"] {
-        font-size: 15px;
-        padding: 12px 20px;
-        min-height: 44px;
-    }
-
-/* Give form labels more breathing room */
-label {
-    font-size: 14px;
-    margin-bottom: 6px;
-}
-
-/* Add a little more spacing between form fields */
-.form-group,
-.field,
-.form-field {
-    margin-bottom: 18px;
-}
-
-/* Make tables easier to read */
-th,
-td {
-    padding: 12px 14px;
-}
-
-/* Keep the app comfortable on smaller screens */
-@media (max-width: 560px) {
-    input,
-    select,
-    textarea,
-    button,
-    .btn,
-    input[type="submit"] {
-        font-size: 16px;
-    }
-}
-/* Slightly enlarge the entire application */
-body {
-    zoom: 1.08;
-}
 
 /* ==============================
    ACCOUNT DROPDOWN
    ============================== */
-.account-area {
+/*.account-area {
     display: flex;
     align-items: center;
     gap: 10px;
@@ -1574,10 +1513,10 @@ body {
         width: min(290px, calc(100vw - 32px));
         right: 0;
     }
-}
+}*/
 
 /* Account dropdown */
-.account-area {
+/*.account-area {
     display: flex;
     align-items: center;
     gap: 10px;
@@ -1711,10 +1650,10 @@ body {
     .account-menu {
         width: min(290px, calc(100vw - 40px));
     }
-}
+}*/
 
 /* Minimal account profile icon */
-.account-area {
+/*.account-area {
     display: flex;
     align-items: center;
     gap: 10px;
@@ -1828,11 +1767,11 @@ body {
 
         .account-staff a:hover {
             text-decoration: underline;
-        }
+        }*/
 
 
 /* Account navigation */
-.account-area {
+/*.account-area {
     display: flex;
     align-items: center;
     gap: 10px;
@@ -1874,10 +1813,10 @@ body {
     .account-trigger:focus-visible {
         outline: 2px solid currentColor;
         outline-offset: 3px;
-    }
+    }*/
 
 /* Dropdown panel */
-.account-menu {
+/*.account-menu {
     position: absolute;
     top: calc(100% + 10px);
     right: 0;
@@ -1909,11 +1848,11 @@ body {
         opacity: 0.7;
         font-size: 13px;
         line-height: 1.5;
-    }
+    }*/
 
 
 /* Login button */
-.account-menu-primary {
+/*.account-menu-primary {
     display: block;
     box-sizing: border-box;
     width: 100%;
@@ -1933,11 +1872,11 @@ body {
         background: #1d4ed8;
         color: #ffffff;
         border-color: #1d4ed8;
-    }
+    }*/
 
 
 /* Staff login */
-.account-staff {
+/*.account-staff {
     display: flex;
     flex-direction: column;
     gap: 6px;
@@ -2001,4 +1940,4 @@ body {
 
     .review-stars .empty {
         color: #64748b;
-    }
+    }*/

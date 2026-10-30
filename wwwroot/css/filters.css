@@ -1,0 +1,33 @@
+﻿
+/* Menu filter buttons */
+.filter-group {
+    display: flex;
+    gap: 4px;
+    background: #050a1a;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 4px;
+}
+
+    .filter-group a {
+        font-size: 9px;
+        font-weight: 700;
+        padding: 7px 12px;
+        border-radius: 8px;
+        color: #e2e8f0;
+        text-align: center;
+    }
+
+        .filter-group a.active {
+            background: var(--blue);
+            color: #fff;
+        }
+
+/* Empty menu state */
+.empty-note {
+    grid-column: 1 / -1;
+    font-size: 12px;
+    color: var(--muted);
+    text-align: center;
+    padding: 40px 0;
+}
